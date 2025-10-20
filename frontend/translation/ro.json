@@ -1,0 +1,73 @@
+{
+  "homePage": {
+    "title": "Toate Rețetele",
+    "description": "Mâncarea ta ",
+    "description2": "Sănătoasă ",
+    "description3": "Gătită ",
+    "description4": "Acasă",
+    "category": "Categorie",
+    "myRecipes": "Rețetele Mele",
+    "favorites": "Favorite"
+  },
+  "myRecipesPage": {
+    "title": "Rețetele Mele",
+    "addNewRecipe": "Adaugă rețetă nouă",
+    "noRecipies": "Nu au fost găsite rețete"
+  },
+  "newRecipePage": {
+    "newTitle": "Adaugă rețetă nouă",
+    "editTitle": "Editează rețeta",
+    "save": "Salvează",
+    "delete": "Șterge",
+    "form": {
+      "placeholderTypeHere": "scrie aici ",
+      "addALink": "Adaugă un link",
+      "linkName": "Nume link",
+      "linkUrl": "Adresă link",
+      "placeholderLinkName": "scrie aici numele linkului...",
+      "placeholderLinkUrl": "scrie aici adresa linkului...",
+      "title": "Titlu",
+      "description": "Descriere",
+      "ingredients": "Ingrediente (separate prin virgulă)",
+      "placeholderIngredients": "separă ingredientele prin virgulă...",
+      "category": "Categorie",
+      "cookingDetails": "Detalii de Gătire",
+      "difficulty": "Dificultate",
+      "servings": "Porții",
+      "timeToCook": "Timp de Gătire",
+      "calories": "Calorii",
+      "temperature": "Temperatură"
+    }
+  },
+  "detailsRecipePage": {
+    "min": "min",
+    "people": "persoane",
+    "ingredients": "Ingrediente",
+    "recipeNotFound": "Rețeta nu a fost găsită"
+  },
+  "favoritesPage": {
+    "title": "Favorite"
+  },
+  "settingsPage": {
+    "title": "Setări",
+    "notifications": "Notificări",
+    "language": "Limbă",
+    "save": "Salvează"
+  },
+  "editProfilePage": {
+    "title": "Editează Profilul",
+    "save": "Salvează",
+    "name": "Nume",
+    "password": "Parolă",
+    "repeatPassword": "Repetă Parola"
+  },
+  "myProfilePage": {
+    "title": "Profilul Meu",
+    "logout": "Deconectează-te",
+    "editProfile": "Editează Profilul",
+    "settings": "Setări"
+  },
+  "searchForRecipe": {
+    "title": "Caută o rețetă"
+  }
+}

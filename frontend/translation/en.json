@@ -1,0 +1,75 @@
+{
+  "homePage": {
+    "title": "All Recipes",
+    "description": "Your ",
+    "description2": "Healthy ",
+    "description3": "Food at ",
+    "description4": "Home",
+    "category": "Category",
+    "myRecipes": "My Recipes",
+    "favorites": "Favorites"
+  },
+  "myRecipesPage": {
+    "title": "My Recipes",
+    "addNewRecipe": "Add new recipe",
+    "noRecipies": "No recipes found"
+  },
+  "newRecipePage": {
+    "newTitle": "Add new recipe",
+    "editTitle": "Edit recipe",
+    "save": "Save",
+    "delete": "Delete",
+    "form": {
+      "placeholderTypeHere": "type here ",
+      "addALink": "Add a link",
+      "linkName": "Link name",
+      "linkUrl": "Link url",
+      "placeholderLinkName": "type here link name...",
+      "placeholderLinkUrl": "type here link url...",
+      "title": "Title",
+      "description": "Description",
+      "ingredients": "Ingredients (Separate with comma)",
+      "placeholderIngredients": "separate ingredients by comma...",
+      "category": "Category",
+      "cookingDetails": "Cooking Details",
+      "difficulty": "Difficulty",
+      "servings": "Servings",
+      "timeToCook": "Time to Cook",
+      "calories": "Calories",
+      "temperature": "Temperature"
+    }
+  },
+
+  "detailsRecipePage": {
+    "min": "min",
+    "people": "people",
+    "ingredients": "Ingredients",
+    "recipeNotFound": "Recipe not found"
+  },
+
+  "favoritesPage": {
+    "title": "Favorites"
+  },
+  "settingsPage": {
+    "title": "Settings",
+    "notifications": "Notifications",
+    "language": "Language",
+    "save": "Save"
+  },
+  "editProfilePage": {
+    "title": "Edit Profile",
+    "save": "Save",
+    "name": "Name",
+    "password": "Password",
+    "repeatPassword": "Repeat Password"
+  },
+  "myProfilePage": {
+    "title": "My Profile",
+    "logout": "Logout",
+    "editProfile": "Edit Profile",
+    "settings": "Settings"
+  },
+  "searchForRecipe": {
+    "title": "Search for recipe"
+  }
+}

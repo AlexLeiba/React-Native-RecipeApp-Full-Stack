@@ -3,22 +3,17 @@ import React from "react";
 import { Image, StyleSheet, TouchableOpacity } from "react-native";
 import { ThemedView } from "../themed-view";
 import { H3 } from "../typography/typography";
+import { RecipesType } from "@/constants/types";
 
 type RecipeCardProps = {
-  id: number;
-  categoryName: string;
-  image: any;
-  title: string;
-  detailsTitle?: string;
-  name: string;
+  data: RecipesType;
 };
-export function RecipeCard({
-  id,
-  categoryName,
-  image,
-  detailsTitle,
-}: RecipeCardProps) {
+export function RecipeCard({ data }: RecipeCardProps) {
   const router = useRouter();
+
+  function handleSelectCard(recipeId: string) {
+    router.push(`/recipe/${recipeId}`);
+  }
   return (
     <ThemedView
       style={[
@@ -33,7 +28,7 @@ export function RecipeCard({
     >
       <TouchableOpacity
         style={{ flex: 1 }}
-        onPress={() => router.push(`/recipe/${id + "-" + categoryName}`)}
+        onPress={() => handleSelectCard(data._id)}
       >
         <ThemedView
           style={[
@@ -43,9 +38,9 @@ export function RecipeCard({
             // { height: index % 3 === 0 ? hp(25) : hp(30) },
           ]}
         >
-          <Image source={image} style={[styles.recipeImage]} />
+          <Image source={{ uri: data.image }} style={[styles.recipeImage]} />
         </ThemedView>
-        <H3 numberOfLines={2}>{detailsTitle}</H3>
+        <H3 numberOfLines={2}>{data.name}</H3>
       </TouchableOpacity>
     </ThemedView>
   );

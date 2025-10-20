@@ -1,36 +1,43 @@
 import React from "react";
 import {
   StyleSheet,
-  TouchableHighlight,
   TouchableHighlightProps,
+  TouchableOpacity,
 } from "react-native";
 import { H3 } from "../typography/typography";
 
 type ButtonProps = {
   handlePress: () => void;
-  title: string;
-  type?: "primary" | "secondary" | "tertiary" | "link";
+  title?: string;
+  type?: "primary" | "secondary" | "tertiary" | "link" | "ghost";
+  children?: React.ReactNode;
 } & TouchableHighlightProps;
 export const Button = ({
   handlePress,
   title,
   type = "primary",
+  children,
   ...rest
 }: ButtonProps) => {
   return (
-    <TouchableHighlight onPress={handlePress} style={[styled[type]]} {...rest}>
-      <H3
-        style={[
-          {
-            color: styled[type].color,
-            fontWeight: "bold",
-            textDecorationLine: styled[type].textDecorationLine,
-          },
-        ]}
-      >
-        {title}
-      </H3>
-    </TouchableHighlight>
+    <TouchableOpacity onPress={handlePress} style={[styled[type]]} {...rest}>
+      <>
+        {title && (
+          <H3
+            style={[
+              {
+                color: styled[type].color,
+                fontWeight: "bold",
+                textDecorationLine: styled[type].textDecorationLine,
+              },
+            ]}
+          >
+            {title}
+          </H3>
+        )}
+        {children}
+      </>
+    </TouchableOpacity>
   );
 };
 
@@ -64,11 +71,16 @@ const styled = StyleSheet.create({
   },
   link: {
     padding: 10,
-    backgroundColor: "#0cb303",
     borderRadius: 20,
     alignItems: "center",
     color: "white",
-    width: "100%",
     textDecorationLine: "underline",
+  },
+  ghost: {
+    padding: 10,
+    borderRadius: 20,
+    alignItems: "center",
+    color: "white",
+    textDecorationLine: "none",
   },
 });

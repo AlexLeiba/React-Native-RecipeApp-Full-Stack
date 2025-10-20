@@ -1,12 +1,17 @@
-import { FavoriteButton, GoBackButton } from "@/components/headerButtons";
+import {
+  FavoriteAndEditButton,
+  GoBackButton,
+} from "@/components/headerButtons";
+import { DetailsCard } from "@/components/RecipeDetailsPage/DetailsCard";
+import { IngredientsCard } from "@/components/RecipeDetailsPage/IngredientsCard";
 import { RecipeDetailsPageSkeleton } from "@/components/skeletons/RecipeDetailsPageSkeleton";
 import { ThemedView } from "@/components/themed-view";
 import { H1, H2, Paragraph } from "@/components/typography/typography";
 import { Button } from "@/components/ui/button";
+import { RECIPES } from "@/constants/MockData";
 import { globalStyles } from "@/constants/stylesheets";
 import { Colors } from "@/constants/theme";
-import { RootState } from "@/store/config";
-import { RecipeType } from "@/store/slices/recipeReducer";
+import { RecipesType } from "@/constants/types";
 import { useLocalSearchParams } from "expo-router";
 import { Clock, Flame, FlameKindling, User2 } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
@@ -19,37 +24,23 @@ import {
   useColorScheme,
   View,
 } from "react-native";
-import { useSelector } from "react-redux";
 
 function RecipeDetailsPage() {
   const { t } = useTranslation();
-  const { recipeId } = useLocalSearchParams();
   const theme = useColorScheme() ?? "light";
-  const recipeData = useSelector((state: RootState) => state.newRecipe);
-  const [selectedRecipeId, setSelectedRecipeId] = useState<number>(0);
+  const { recipeId } = useLocalSearchParams();
+  // const recipeData = useSelector((state: RootState) => state.recipes);
 
-  const [selectedRecipeData, setSelectedRecipeData] = useState<RecipeType>();
+  const [selectedRecipeData, setSelectedRecipeData] = useState<RecipesType>();
 
   useEffect(() => {
-    if (typeof recipeId === "string") {
-      const recipeIdData = Number(recipeId);
-      if (isNaN(recipeIdData)) return;
-
-      setSelectedRecipeId(recipeIdData);
-      const selectedRecipe = recipeData.find(
-        (data) => data.id === Number(recipeId)
-      );
-
-      if (selectedRecipe) {
-        setSelectedRecipeData({
-          ...selectedRecipe,
-          ingredients: selectedRecipe.ingredients,
-        });
-      }
-    }
-  }, [recipeId, recipeData]);
+    const selectedRecipe = RECIPES.find((rec) => rec._id === recipeId);
+    setSelectedRecipeData(selectedRecipe);
+  }, [recipeId]);
 
   const [loading, setLoading] = useState(false);
+
+  // Test skeleton
   useEffect(() => {
     //fetch data
     setLoading(true);
@@ -73,24 +64,28 @@ function RecipeDetailsPage() {
     {
       icon: <Clock color={Colors[theme].text} size={20} />,
       title: `${
-        selectedRecipeData?.timeToCook + " " + t("detailsRecipePage.min")
+        selectedRecipeData.details?.timeToCook +
+        " " +
+        t("detailsRecipePage.min")
       }`,
     },
     {
       icon: <Flame color={Colors[theme].text} size={20} />,
-      title: selectedRecipeData?.calories
-        ? `${selectedRecipeData?.calories + " kcal"}`
+      title: selectedRecipeData.details?.calories
+        ? `${selectedRecipeData.details?.calories + " kcal"}`
         : "",
     },
     {
       icon: <FlameKindling color={Colors[theme].text} size={20} />,
-      title: selectedRecipeData?.temperature
-        ? `${selectedRecipeData?.temperature + "°C"} `
+      title: selectedRecipeData.details?.temperature
+        ? `${selectedRecipeData.details?.temperature + "°C"} `
         : "",
     },
     {
       icon: <User2 color={Colors[theme].text} size={20} />,
-      title: `${selectedRecipeData?.servings} ${t("detailsRecipePage.people")}`,
+      title: `${selectedRecipeData.details?.servings} ${t(
+        "detailsRecipePage.people"
+      )}`,
     },
   ];
 
@@ -112,7 +107,7 @@ function RecipeDetailsPage() {
         ]}
       >
         <Image
-          source={selectedRecipeData?.category?.image}
+          source={{ uri: selectedRecipeData?.image || "" }}
           style={{
             width: "100%",
             height: "100%",
@@ -122,16 +117,12 @@ function RecipeDetailsPage() {
         />
       </View>
 
-      <GoBackButton path="/my-recipe-page" />
+      <GoBackButton path="/dashboard" />
 
-      <FavoriteButton
-        recipeData={selectedRecipeData}
-        recipeCategoryName={"my-recipe-page"}
-        recipeCategoryId={selectedRecipeId}
-      />
+      <FavoriteAndEditButton recipeData={selectedRecipeData} />
 
       <View style={[globalStyles.alignCenter, { gap: 10, marginBottom: 20 }]}>
-        <H1>{selectedRecipeData?.title}</H1>
+        <H1>{selectedRecipeData?.name}</H1>
 
         {selectedRecipeData.description && (
           <View style={[{}, { gap: 10, marginBottom: 20 }]}>
@@ -143,8 +134,8 @@ function RecipeDetailsPage() {
       </View>
 
       {selectedRecipeData.link &&
-        selectedRecipeData.linkUrl &&
-        selectedRecipeData.linkName && (
+        selectedRecipeData.link.linkName &&
+        selectedRecipeData.link.linkUrl && (
           <View
             style={[
               globalStyles.alignCenter,
@@ -153,10 +144,11 @@ function RecipeDetailsPage() {
           >
             <Button
               type="link"
-              title={selectedRecipeData.linkName}
+              title={selectedRecipeData.link.linkName}
               handlePress={() => {
-                selectedRecipeData.linkUrl &&
-                  Linking.openURL(selectedRecipeData.linkUrl);
+                if (selectedRecipeData.link?.linkUrl) {
+                  Linking.openURL(selectedRecipeData.link.linkUrl);
+                }
               }}
             />
           </View>
@@ -184,63 +176,11 @@ function RecipeDetailsPage() {
         ListHeaderComponent={() => (
           <H2>{t("detailsRecipePage.ingredients")}</H2>
         )}
-        data={selectedRecipeData?.ingredients}
+        data={selectedRecipeData?.details.ingredients}
         renderItem={({ item }) => <IngredientsCard title={item} />}
       />
     </ScrollView>
   );
 }
-
-const IngredientsCard = ({ title }: { title: string }) => {
-  return (
-    <View
-      style={{
-        padding: 10,
-        backgroundColor: "#979711",
-        borderRadius: 20,
-        marginHorizontal: 15,
-        flexDirection: "row",
-        gap: 10,
-        alignItems: "center",
-      }}
-    >
-      <View
-        style={{
-          height: 30,
-          width: 30,
-          backgroundColor: "#ffffff",
-          borderRadius: "100%",
-        }}
-      />
-      <Paragraph>{title}</Paragraph>
-    </View>
-  );
-};
-
-const DetailsCard = ({
-  icon,
-  title,
-}: {
-  icon: React.ReactNode;
-  title: string;
-}) => {
-  const theme = useColorScheme() ?? "light";
-  return (
-    <View
-      style={{
-        padding: 10,
-        backgroundColor: "#757474",
-        borderRadius: 20,
-        flex: 1,
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
-      {icon}
-
-      <Paragraph style={{ color: Colors[theme].text }}>{title}</Paragraph>
-    </View>
-  );
-};
 
 export default RecipeDetailsPage;

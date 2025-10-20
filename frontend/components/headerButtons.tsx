@@ -1,14 +1,14 @@
+import { RecipesType } from "@/constants/types";
 import { RootState } from "@/store/config";
-import { setToFavorite } from "@/store/slices/favoritesReducer";
-import { RecipeType } from "@/store/slices/recipeReducer";
 import { useRouter } from "expo-router";
-import { ArrowLeft, Heart } from "lucide-react-native";
+import { ArrowLeft, Edit, Heart } from "lucide-react-native";
 import React from "react";
-import { StyleSheet, TouchableHighlight } from "react-native";
+import { StyleSheet } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import { Button } from "./ui/button";
 
 type GoBackProps = {
-  path?: "/my-food" | "/favorites" | "/my-food-page" | "/" | "/my-recipe-page";
+  path?: "/dashboard" | "/favorites" | "/profile";
 };
 export const GoBackButton = ({ path }: GoBackProps) => {
   const router = useRouter();
@@ -21,43 +21,55 @@ export const GoBackButton = ({ path }: GoBackProps) => {
     router.back();
   }
   return (
-    <TouchableHighlight onPress={handlePath} style={styles.backbutton}>
+    <Button handlePress={handlePath} style={styles.backbutton}>
       <ArrowLeft color={"white"} />
-    </TouchableHighlight>
+    </Button>
   );
 };
 
 type FavoriteButtonProps = {
-  recipeData: RecipeType;
-  recipeCategoryName: string;
-  recipeCategoryId: number;
+  recipeData: RecipesType;
 };
-export const FavoriteButton = ({
-  recipeData,
-  recipeCategoryName,
-  recipeCategoryId,
-}: FavoriteButtonProps) => {
+export const FavoriteAndEditButton = ({ recipeData }: FavoriteButtonProps) => {
+  const router = useRouter();
   const dispatch = useDispatch();
 
   const favoriteElement = useSelector((state: RootState) =>
-    state.favorites.favorites.find((recipe) => recipe.id === recipeData.id)
+    state.favorites.favorites.find((recipe) => recipe._id === recipeData._id)
   );
 
+  function handleAddToFavorites() {
+    // dispatch(
+    //         setToFavorite({
+    //           ...recipeData,
+    //           categoryName: recipeCategoryName,
+    //           categoryId: recipeCategoryId,
+    //         })
+    //       )
+  }
+
+  function handleNavigateToEdit() {
+    router.push(`/recipe/edit-recipe/${recipeData._id}`);
+  }
+
   return (
-    <TouchableHighlight
-      onPress={() =>
-        dispatch(
-          setToFavorite({
-            ...recipeData,
-            categoryName: recipeCategoryName,
-            categoryId: recipeCategoryId,
-          })
-        )
-      }
-      style={styles.favoriteButton}
-    >
-      <Heart color={favoriteElement?.favorites ? "red" : "white"} />
-    </TouchableHighlight>
+    <>
+      <Button
+        type="ghost"
+        handlePress={handleAddToFavorites}
+        style={styles.favoriteButton}
+      >
+        <Heart color={favoriteElement ? "red" : "white"} />
+      </Button>
+
+      <Button
+        type="ghost"
+        handlePress={handleNavigateToEdit}
+        style={[styles.favoriteButton, { top: 80 }]}
+      >
+        <Edit color={"white"} />
+      </Button>
+    </>
   );
 };
 

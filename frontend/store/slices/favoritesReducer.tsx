@@ -1,29 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { RecipeType } from "./recipeReducer";
+import { FavoritesType, RecipesType } from "@/constants/types";
+import { FAVORITES, RECIPES } from "@/constants/MockData";
 
 type FavoritesStateType = {
-  favorites: RecipeType[];
+  favorites: FavoritesType[];
 };
 const initialState: FavoritesStateType = {
-  favorites: [],
+  favorites: FAVORITES,
 };
 
 const favoritesSlice = createSlice({
   name: "favorites",
   initialState,
   reducers: {
-    setToFavorite(state, action: { payload: RecipeType }) {
-      const selectedElement = state.favorites.find(
-        (recipe) => recipe.id === action.payload.id
-      );
-
-      if (selectedElement) {
-        state.favorites = state.favorites.filter(
-          (recipe) => recipe.id !== action.payload.id
-        );
-      } else {
-        state.favorites.push({ ...action.payload, favorites: true });
-      }
+    setToFavorite(state, action: { payload: RecipesType }) {
+      //  TODO based on the selected id
+      // Make a req to backend to add recipe to favorites
+      // and to fronted change the icon to favoritres if the req was successful
     },
   },
 });

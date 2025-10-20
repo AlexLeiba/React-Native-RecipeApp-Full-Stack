@@ -5,16 +5,16 @@ import {
 } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import "react-native-reanimated";
-
 import { LottieSplashScreen } from "@/components/LottieSplashScreenAnimation/LottieSplashScreen";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useEffect, useState } from "react";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistor, store } from "../store/config";
 import { initI18n } from "./i18n";
+import { AuthProvider } from "@/context/AuthContext";
+import "react-native-reanimated";
 
 export default function RootLayout() {
   const [ready, setReady] = useState(false);
@@ -41,49 +41,32 @@ export default function RootLayout() {
   }
 
   return (
-    <Provider store={store}>
-      <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
-          <SafeAreaProvider>
+    <AuthProvider>
+      <Provider store={store}>
+        <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+          <ThemeProvider
+            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+          >
             <SafeAreaView
               style={{
                 flex: 1,
                 paddingHorizontal: 20,
-
                 backgroundColor: colorScheme === "dark" ? "black" : "white",
               }}
             >
               <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="index" options={{ headerShown: false }} />
+                <Stack.Screen name="sign-up" options={{ headerShown: false }} />
                 <Stack.Screen
-                  name="recipe/[recipeId]"
+                  name="forgot-password"
                   options={{ headerShown: false }}
                 />
-                <Stack.Screen
-                  name="favorites"
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name="my-recipe-page"
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name="new-recipe"
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name="edit-recipe/[recipeId]"
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen name="profile" options={{ headerShown: false }} />
               </Stack>
               <StatusBar style="auto" />
             </SafeAreaView>
-          </SafeAreaProvider>
-        </ThemeProvider>
-      </PersistGate>
-    </Provider>
+          </ThemeProvider>
+        </PersistGate>
+      </Provider>
+    </AuthProvider>
   );
 }

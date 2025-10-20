@@ -1,8 +1,9 @@
 import { ThemedView } from "@/components/themed-view";
 import { Paragraph } from "@/components/typography/typography";
 import { globalStyles } from "@/constants/stylesheets";
+import { CategoryType } from "@/constants/types";
 import { RootState } from "@/store/config";
-import { CategoryType, selectCategory } from "@/store/slices/categoriesReducer";
+import { selectCategory } from "@/store/slices/categoriesReducer";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -28,31 +29,16 @@ function CategoryCard({ item }: Props) {
   const [category, setCategory] = useState<CategoryType>({
     name: "Beef",
     image: require("../../assets/food-categories/beef.png"),
-    id: 3,
-    selected: true,
+    _id: "3",
+    userId: "3",
   });
   const router = useRouter();
   function handleSelectCategory(
     category: CategoryType["name"],
-    categoryId: number
-  ) {
-    if (category === "My recipies") {
-      return router.push("/my-recipe-page");
-    }
-    if (category === "Favorites") {
-      return router.push("/favorites");
-    } else {
-      dispatch(selectCategory({ categoryId }));
-
-      const selectedCategory = categoriesData.find(
-        (cat) => cat.id === categoryId
-      );
-
-      selectedCategory && setCategory(selectedCategory);
-    }
-  }
+    categoryId: string
+  ) {}
   return (
-    <TouchableOpacity onPress={() => handleSelectCategory(item.name, item.id)}>
+    <TouchableOpacity onPress={() => handleSelectCategory(item.name, item._id)}>
       <ThemedView style={[globalStyles.alignCenter, {}]}>
         <ThemedView
           style={[
@@ -65,13 +51,13 @@ function CategoryCard({ item }: Props) {
               borderWidth: 5,
             },
 
-            category?.id === item.id && {
+            category?._id === item._id && {
               borderColor: "#ffb514e9",
               borderWidth: 5,
             },
           ]}
         >
-          <Image source={item.image} style={styles.avatar} />
+          <Image source={{ uri: item.image }} style={styles.avatar} />
         </ThemedView>
         <Paragraph>{item.name}</Paragraph>
       </ThemedView>

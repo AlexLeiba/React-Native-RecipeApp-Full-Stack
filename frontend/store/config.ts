@@ -13,13 +13,11 @@ import {
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
 import categoriesReducer from "./slices/categoriesReducer";
 import favoritesReducer from "./slices/favoritesReducer";
-import hardcodedRecipeReducer from "./slices/hardcodedRecipeReducer";
-import newRecipeReducer from "./slices/recipeReducer";
+import recipesReducer from "./slices/recipeReducer";
 
 const rootReducer = combineReducers({
-  newRecipe: newRecipeReducer,
+  recipes: recipesReducer,
   categories: categoriesReducer,
-  hardcodedRecipes: hardcodedRecipeReducer,
   favorites: favoritesReducer,
 });
 

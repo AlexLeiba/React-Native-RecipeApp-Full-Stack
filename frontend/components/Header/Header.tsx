@@ -14,7 +14,7 @@ import UserProfile from "../UserProfile/UserProfile";
 
 type HeaderProps = {
   scrollOffset: number;
-  backPath?: "/my-recipe-page" | "/favorites" | "/" | "/profile";
+  backPath?: "/dashboard" | "/favorites" | "/profile" | "/";
   withArrowBack?: boolean;
   title: string;
   withSearch?: boolean;

@@ -14,6 +14,23 @@ const UserSchema = new mongoose.Schema({
     required: true,
   },
   avatar: { type: String },
+  roles: {
+    user: {
+      type: String,
+      default: "user",
+    },
+    editor: String,
+    admin: String,
+  },
+  refreshToken: {
+    type: String,
+  },
+  otp: {
+    type: Number,
+  },
+  otpCreatedAt: {
+    type: Number,
+  },
 });
 
 const UserModel = mongoose.model("User", UserSchema);

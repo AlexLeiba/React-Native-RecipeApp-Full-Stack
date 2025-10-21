@@ -1,20 +1,14 @@
 import { useDebounce } from "@/hooks/useDebounce";
 import { RootState } from "@/store/config";
-import { RecipeType } from "@/store/slices/recipeReducer";
 import { useRouter } from "expo-router";
 import { X } from "lucide-react-native";
 import React, { useEffect } from "react";
-import {
-  FlatList,
-  ImageSourcePropType,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 import { ThemedView } from "../themed-view";
 import { Input } from "../ui/input";
 import RecipeSearchCard from "./RecipeSearchCard";
+import { RecipesType } from "@/constants/types";
 
 export function GlobalSearch({
   handleCloseSearch,
@@ -23,25 +17,15 @@ export function GlobalSearch({
 }) {
   const debounce = useDebounce();
   const router = useRouter();
-  const hardcodedRecipeData = useSelector(
-    (state: RootState) => state.hardcodedRecipes["beef"].data
-  );
+  const hardcodedRecipeData = useSelector((state: RootState) => state.recipes);
   const [value, onChangeText] = React.useState("");
-  const [searchResults, setSearchResults] = React.useState<
-    {
-      name: string;
-      image: ImageSourcePropType;
-      id: number;
-      categoryId: number;
-      details: RecipeType;
-    }[]
-  >([]);
+  const [searchResults, setSearchResults] = React.useState<RecipesType[]>([]);
 
   useEffect(() => {
     function handleSearch() {
       if (value.trim() !== "") {
         const searchedData = hardcodedRecipeData.filter((data) =>
-          data.details.title.toLowerCase().includes(value.toLowerCase())
+          data.name.toLowerCase().includes(value.toLowerCase())
         );
         console.log("🚀 ~ handleSearch ~ searchedData:", searchedData);
 
@@ -85,17 +69,17 @@ export function GlobalSearch({
 
       {searchResults.length > 0 && (
         <FlatList
-          keyExtractor={(item, index) => item.details.id.toString() + index}
+          keyExtractor={(item, index) => item._id.toString() + index}
           contentContainerStyle={{ gap: 20 }}
           numColumns={1}
           renderItem={({ item }) => (
             <RecipeSearchCard
               handleSelectRecipe={() =>
                 router.push(
-                  `/recipe/${item.details.id + "-" + item.name.toLowerCase()}`
+                  `/recipe/${item._id + "-" + item.name.toLowerCase()}`
                 )
               }
-              title={item.details.title}
+              title={item.name}
               category={item.name}
               image={item.image}
             />

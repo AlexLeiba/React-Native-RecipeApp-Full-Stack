@@ -3,7 +3,6 @@ import { Paragraph } from "@/components/typography/typography";
 import { globalStyles } from "@/constants/stylesheets";
 import { CategoryType } from "@/constants/types";
 import { RootState } from "@/store/config";
-import { selectCategory } from "@/store/slices/categoriesReducer";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

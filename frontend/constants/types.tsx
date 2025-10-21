@@ -2,9 +2,14 @@ export type UserType = {
   _id?: string;
   username: string;
   email: string;
-  password: string;
+  password?: string;
   avatar?: string;
   accessToken?: string;
+  roles: {
+    user: string;
+    editor?: string;
+    admin?: string;
+  };
 };
 
 export type SettingsType = {

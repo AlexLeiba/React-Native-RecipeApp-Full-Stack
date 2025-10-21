@@ -1,6 +1,7 @@
 import Header from "@/components/Header/Header";
 import { ThemedView } from "@/components/themed-view";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "expo-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -10,6 +11,8 @@ function ProfilePage() {
   const { t } = useTranslation();
   const router = useRouter();
 
+  const { handleSignOut } = useAuth();
+
   function handleEditProfile() {
     router.push("/profile/edit-profile");
   }
@@ -18,7 +21,9 @@ function ProfilePage() {
     router.push("/profile/settings");
   }
 
-  function handleLogout() {}
+  function handleLogout() {
+    handleSignOut();
+  }
   return (
     <>
       <Header

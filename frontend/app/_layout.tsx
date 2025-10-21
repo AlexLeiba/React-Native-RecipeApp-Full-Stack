@@ -15,6 +15,7 @@ import { persistor, store } from "../store/config";
 import { initI18n } from "./i18n";
 import { AuthProvider } from "@/context/AuthContext";
 import "react-native-reanimated";
+import ToastManager from "toastify-react-native";
 
 export default function RootLayout() {
   const [ready, setReady] = useState(false);
@@ -54,6 +55,7 @@ export default function RootLayout() {
                 backgroundColor: colorScheme === "dark" ? "black" : "white",
               }}
             >
+              <ToastManager position="top" toastOptions={{ duration: 3000 }} />
               <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="index" options={{ headerShown: false }} />
                 <Stack.Screen name="sign-up" options={{ headerShown: false }} />

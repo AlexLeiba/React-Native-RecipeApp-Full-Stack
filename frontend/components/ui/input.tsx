@@ -1,5 +1,5 @@
-import { Search, X } from "lucide-react-native";
-import React from "react";
+import { Eye, EyeClosed, Search, X } from "lucide-react-native";
+import React, { useState } from "react";
 import {
   StyleSheet,
   TextInput,
@@ -15,7 +15,7 @@ type InputProps = {
   value: string;
   errorMessage?: string;
   label?: string;
-  inputType?: "search";
+  inputType?: "search" | "password";
 } & TextInputProps;
 export const Input = ({
   handleChange,
@@ -26,6 +26,7 @@ export const Input = ({
   inputType,
   ...rest
 }: InputProps) => {
+  const [showPassword, setShowPassword] = useState(true);
   return (
     <ThemedView style={styles.container}>
       {label && <H3>{label}</H3>}
@@ -34,6 +35,7 @@ export const Input = ({
         <Search style={{ position: "absolute", left: 10, top: 10 }} />
       )}
       <TextInput
+        secureTextEntry={inputType !== "password" ? false : showPassword}
         style={[
           styles.inputStyle,
           inputType === "search" && { paddingHorizontal: 40 },
@@ -55,6 +57,34 @@ export const Input = ({
           }}
         >
           <X />
+        </TouchableOpacity>
+      )}
+      {inputType === "password" && showPassword && (
+        <TouchableOpacity
+          onPress={() => setShowPassword(false)}
+          style={{
+            position: "absolute",
+            right: 5,
+            top: 35,
+            padding: 5,
+            zIndex: 100,
+          }}
+        >
+          <Eye />
+        </TouchableOpacity>
+      )}
+      {inputType === "password" && !showPassword && (
+        <TouchableOpacity
+          onPress={() => setShowPassword(true)}
+          style={{
+            position: "absolute",
+            right: 5,
+            top: 35,
+            padding: 5,
+            zIndex: 100,
+          }}
+        >
+          <EyeClosed />
         </TouchableOpacity>
       )}
       {errorMessage && (

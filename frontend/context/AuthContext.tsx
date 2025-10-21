@@ -18,8 +18,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserType | null>(null);
 
   async function handleSignIn(user: UserType) {
-    await SecureStore.setItemAsync("token", "token"); //encrypts token
-    const token = await SecureStore.getItemAsync("token");
+    // if (user.accessToken) {
+    //   await SecureStore.setItemAsync("token", user.accessToken); //encrypts token
+    // }
+    // const token = await SecureStore.getItemAsync("token");
     // TODO http client login req based on user credentials
     // If res is successful then we will send back user token , and will save it to AsyncStorage
     setUser(user);

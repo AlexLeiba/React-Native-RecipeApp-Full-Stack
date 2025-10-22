@@ -23,6 +23,7 @@ function ProfilePage() {
 
   function handleLogout() {
     handleSignOut();
+    router.push("/");
   }
   return (
     <>

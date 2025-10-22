@@ -17,7 +17,7 @@ function SignInPage() {
   const { t } = useTranslation();
   const { loginSchema } = useSchemas();
   const router = useRouter();
-  const { handleSignIn } = useAuth();
+  const { handleSignIn, handleSignOut } = useAuth();
 
   return (
     <ThemedView style={styles.container}>
@@ -25,6 +25,28 @@ function SignInPage() {
         <LanguageDropdown />
       </View>
       <H1>{t("signInPage.title")}</H1>
+
+      <Button
+        type="ghost"
+        handlePress={() => {
+          handleSignIn({
+            username: "username",
+            email: "email@gmail.com",
+            accessToken: "token",
+            avatar: "",
+            roles: { user: "user" },
+          });
+        }}
+        title={"press secure"}
+      />
+
+      <Button
+        type="ghost"
+        handlePress={() => {
+          handleSignOut();
+        }}
+        title={"press secure"}
+      />
 
       <Formik
         validationSchema={loginSchema}

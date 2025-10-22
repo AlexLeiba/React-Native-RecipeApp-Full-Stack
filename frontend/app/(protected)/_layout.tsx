@@ -33,13 +33,14 @@ export default function RootLayout() {
   }
 
   return (
-    <ProtectedRoute>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="dashboard" options={{ headerShown: false }} />
-        <Stack.Screen name="favorites" options={{ headerShown: false }} />
-        <Stack.Screen name="profile" options={{ headerShown: false }} />
-        <Stack.Screen name="recipe" options={{ headerShown: false }} />
-      </Stack>
-    </ProtectedRoute>
+    // TODO: delete comment of protected route
+    // <ProtectedRoute>
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="dashboard" options={{ headerShown: false }} />
+      <Stack.Screen name="favorites" options={{ headerShown: false }} />
+      <Stack.Screen name="profile" options={{ headerShown: false }} />
+      <Stack.Screen name="recipe" options={{ headerShown: false }} />
+    </Stack>
+    // </ProtectedRoute>
   );
 }

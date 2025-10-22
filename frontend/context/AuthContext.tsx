@@ -1,7 +1,8 @@
 import { UserType } from "@/constants/types";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 import * as SecureStore from "expo-secure-store";
+import { Platform } from "react-native";
 
 type AuthContextType = {
   user: UserType | null;
@@ -17,19 +18,60 @@ const AuthContext = createContext<AuthContextType>({
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserType | null>(null);
 
+  // Will check at reload page if user is authenticated
+  async function checkIfUserIsAuthenticated() {
+    const token =
+      Platform.OS === "web"
+        ? localStorage.getItem("token")
+        : await SecureStore.getItemAsync("token");
+
+    //  If token exists, make a req and check if its not expired.
+    //if expired make a refreshToken req.
+    //if refreshtoken expired then delete token and logout
+
+    if (token) {
+      setUser({
+        username: "username",
+        email: "email@gmail.com",
+        accessToken: token,
+        avatar: "",
+        roles: { user: "user" },
+      });
+    }
+  }
+  useEffect(() => {
+    console.log("Reload page");
+    checkIfUserIsAuthenticated();
+  }, []);
+
   async function handleSignIn(user: UserType) {
-    // if (user.accessToken) {
-    //   await SecureStore.setItemAsync("token", user.accessToken); //encrypts token
-    // }
-    // const token = await SecureStore.getItemAsync("token");
+    if (user.accessToken) {
+      if (Platform.OS === "web") {
+        localStorage.setItem("token", user.accessToken);
+      } else {
+        await SecureStore.setItemAsync("token", user.accessToken); //encrypts token
+      }
+    }
+    const token =
+      Platform.OS === "web"
+        ? localStorage.getItem("token")
+        : await SecureStore.getItemAsync("token");
+
+    console.log("🚀 ~ Saved securely token:", token);
     // TODO http client login req based on user credentials
-    // If res is successful then we will send back user token , and will save it to AsyncStorage
+
     setUser(user);
   }
 
-  function handleSignOut() {
+  async function handleSignOut() {
     // TODO http client req to logout
     setUser(null);
+
+    if (Platform.OS === "web") {
+      localStorage.removeItem("token");
+    } else {
+      await SecureStore.deleteItemAsync("token"); //encrypts token
+    }
   }
 
   // TODO dispatch if user is logged request with token

@@ -27,9 +27,15 @@ const UserSchema = new mongoose.Schema({
   },
   otp: {
     type: Number,
+    default: null,
   },
   otpCreatedAt: {
     type: Number,
+    default: null,
+  },
+  otpVrified: {
+    type: Boolean,
+    default: false,
   },
 });
 

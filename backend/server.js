@@ -2,11 +2,15 @@ require("dotenv").config();
 const express = require("express");
 const mongoDBConnect = require("./config/mongoDbConnect");
 const mongoose = require("mongoose");
+const verifyJWT = require("./config/middleware/verifyJWT");
+const verifyRolesPermissions = require("./config/middleware/verifyRolePermissions");
 //routes
 const authRoute = require("./routes/auth");
 const recipeRoute = require("./routes/recipes");
 const categoriesRoute = require("./routes/categories");
 const settingsRoute = require("./routes/settings");
+const usersRoute = require("./routes/users");
+const ROLES = require("./config/roles");
 
 // connect to mongoDB
 mongoDBConnect();
@@ -19,9 +23,10 @@ app.use(express.urlencoded({ extended: true })); // for parsing application/x-ww
 
 // use routes
 app.use("/api", authRoute);
-app.use("/api", recipeRoute);
-app.use("/api", categoriesRoute);
-app.use("/api", settingsRoute);
+app.use("/api", verifyJWT, recipeRoute);
+app.use("/api", verifyJWT, categoriesRoute);
+app.use("/api", verifyJWT, settingsRoute);
+app.use("/api", verifyRolesPermissions([ROLES.user, ROLES.admin]), usersRoute);
 
 // Error handling
 app.use((err, _, res) => {

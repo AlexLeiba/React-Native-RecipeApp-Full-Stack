@@ -33,9 +33,9 @@ async function loginController(req, res) {
         username: foundUserInDB.username,
         email: foundUserInDB.email,
       },
-      process.env.SECRET_REFRESH_TOKEN,
+      process.env.JWT_SECRET_REFRESH_TOKEN,
       {
-        expiresIn: "2d",
+        expiresIn: "1m",
       }
     );
 
@@ -57,9 +57,9 @@ async function loginController(req, res) {
         email: foundUserInDB.email,
         roles: foundUserInDB.roles,
       },
-      process.env.SECRET_ACCESS_TOKEN,
+      process.env.JWT_SECRET_ACCESS_TOKEN,
       {
-        expiresIn: "1m",
+        expiresIn: "30s",
       }
     );
 
@@ -160,7 +160,6 @@ async function forgotPasswordController(req, res) {
 
   try {
     const foundUser = await UserModel.findOne({ email });
-    console.log("🚀 ~ forgotPasswordController ~ foundUser:", foundUser);
 
     if (!foundUser) {
       res.status(400).json({ message: "User not found" });
@@ -198,18 +197,130 @@ async function forgotPasswordController(req, res) {
   }
   //send email
 }
+
+const now = Date.now(); //curr time in ms
+const otpExpireTime = 1000 * 60 * 1; //1min in ms
 async function checkOTPController(req, res) {
-  // check if code expired before matching
-  // if matches ask for new passwords
-  //type otp
+  const { otp, email } = req.body;
+
+  if (!otp || !email) {
+    res.status(400).json({ message: "Some required fields are missing." });
+  }
+
+  try {
+    const foundUserWithOtp = await UserModel.findOne({ otp, email });
+    if (!foundUserWithOtp) {
+      res.status(400).json({ message: "The code is invalid." });
+    }
+
+    // check if otp isnt expired
+
+    if (foundUserWithOtp.otpCreatedAt + otpExpireTime < now) {
+      res
+        .status(400)
+        .json({ message: "The code has expired, please try again." });
+    }
+
+    // if user was found and otp is valid and matches
+    foundUserWithOtp.otpVrified = true;
+    foundUserWithOtp.otp = null;
+
+    foundUserWithOtp.save();
+
+    res.status(200).json({ message: "Code is valid" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 }
 async function newPasswordController(req, res) {
-  // before changing password check if it has otp code in db,and if not expired.
-  //after introducing new password, delete otp and optCreated from DB
-  //introduce new password
+  const { email, newPassword } = req.body;
+
+  if (!email || !newPassword) {
+    res.status(400).json({ message: "Some required fields are missing" });
+  }
+
+  const foundUser = await UserModel.findOne({ email });
+
+  if (!foundUser) {
+    res.status(400).json({ message: "User not found" });
+  }
+
+  const hasUserVerifiedOTP = foundUser.otpVrified;
+  const hasExpiredOTP = foundUser.otpCreatedAt;
+
+  if (!hasUserVerifiedOTP) {
+    res
+      .status(400)
+      .json({ message: "User has not validated verification code" });
+  }
+
+  // /if expired delete verified and time created
+  if (hasExpiredOTP + otpExpireTime < now) {
+    foundUser.otpVrified = false;
+    foundUser.otpCreatedAt = null;
+    foundUser.save();
+    res
+      .status(400)
+      .json({ message: "The code has expired, please try again." });
+  }
+
+  //save new password in db
+  foundUser.password = await bcrypt.hash(newPassword, 16);
+  foundUser.otpVrified = false;
+  foundUser.otpCreatedAt = null;
+  foundUser.save();
+
+  res.status(200).json({ message: "Password was changed successfully" });
 }
 async function refreshTokenController(req, res) {
-  //introduce new password
+  const cookies = req.cookies;
+
+  if (!cookies?.jwt) {
+    res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const refreshToken = cookies.jwt;
+
+  try {
+    const foundUser = await UserModel.findOne({ refreshToken });
+
+    if (!foundUser) {
+      res.status(403).json({ message: "Forbidden" });
+    }
+
+    jwt.verify(
+      refreshToken,
+      process.env.JWT_SECRET_REFRESH_TOKEN,
+      (err, decoded) => {
+        if (err || foundUser.email !== decoded.email) {
+          //TODO. logout when the token is expired
+          res.status(403).json({ message: "Forbidden" });
+        }
+
+        //create new accessToken
+
+        const jwtNewAccessToken = jwt.sign(
+          {
+            username: foundUser.username,
+            email: foundUser.email,
+            roles: foundUser.roles,
+          },
+          process.env.JWT_SECRET_ACCESS_TOKEN,
+          { expiresIn: "30s" }
+        );
+
+        if (!jwtNewAccessToken) {
+          return res
+            .status(500)
+            .json({ message: "Error creating new access token" });
+        }
+
+        res.status(200).json({ accessToken: jwtNewAccessToken });
+      }
+    );
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 }
 
 module.exports = {

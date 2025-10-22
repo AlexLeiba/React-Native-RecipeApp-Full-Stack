@@ -2,21 +2,26 @@ import { ThemedView } from "@/components/themed-view";
 import { H1, H2, Paragraph } from "@/components/typography/typography";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { forgotPasswordSchema } from "@/constants/schemas";
+import { useSchemas } from "@/constants/schemas";
 import { useRouter } from "expo-router";
 import { Formik } from "formik";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
+import { Toast } from "toastify-react-native";
 
 function ForgotPasswordPage() {
   const router = useRouter();
+  const { forgotPasswordSchema } = useSchemas();
+  const { t } = useTranslation();
   return (
     <ThemedView style={styles.container}>
-      <H1>Forgot Password</H1>
+      <H1>{t("forgotPasswordPage.forgotPasswordTitle")}</H1>
 
       <Formik
         onSubmit={(values) => {
           console.log("email", values);
+          Toast.success(t("forgotPasswordPage.anEmailWasSent"));
           router.push("/forgot-password/verification-otp");
         }}
         validationSchema={forgotPasswordSchema}
@@ -26,8 +31,8 @@ function ForgotPasswordPage() {
           return (
             <View style={styles.inputsContainer}>
               <Input
-                placeholder="Type your email here"
-                label="Your email"
+                placeholder={t("forgotPasswordPage.emailPlaceholder")}
+                label={t("forgotPasswordPage.email")}
                 handleChange={handleChange("email")}
                 value={values.email}
                 errorMessage={errors.email}
@@ -38,17 +43,19 @@ function ForgotPasswordPage() {
                   type="ghost"
                   handlePress={() => router.push("/sign-up")}
                 >
-                  <Paragraph>Sign up</Paragraph>
+                  <Paragraph>{t("forgotPasswordPage.signUp")}</Paragraph>
                 </Button>
                 <Button
                   type="ghost"
                   handlePress={() => router.push("/sign-up")}
                 >
-                  <Paragraph>Sign in</Paragraph>
+                  <Paragraph>{t("forgotPasswordPage.signIn")}</Paragraph>
                 </Button>
               </View>
               <Button type="secondary" handlePress={handleSubmit}>
-                <H2 style={{ color: "black" }}>Send email</H2>
+                <H2 style={{ color: "black" }}>
+                  {t("forgotPasswordPage.submit")}
+                </H2>
               </Button>
             </View>
           );

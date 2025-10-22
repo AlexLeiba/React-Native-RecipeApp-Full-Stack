@@ -55,7 +55,7 @@ export default function RootLayout() {
                 backgroundColor: colorScheme === "dark" ? "black" : "white",
               }}
             >
-              <ToastManager position="top" toastOptions={{ duration: 3000 }} />
+              <ToastManager position="top" toastOptions={{ duration: 6000 }} />
               <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="index" options={{ headerShown: false }} />
                 <Stack.Screen name="sign-up" options={{ headerShown: false }} />

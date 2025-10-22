@@ -1,4 +1,60 @@
 {
+  "signInPage": {
+    "title": "Sign In",
+    "email": "Email",
+    "emailPlaceholder": "Type your email here",
+    "invalidEmail": "Invalid email",
+    "password": "Password",
+    "passwordPlaceholder": "Type your password here",
+    "required": "Required",
+    "doNotHaveAnAccount": "Don't have an account? Sign up",
+    "forgotPassword": "Forgot password",
+    "passwordTooShort": "Password is too short",
+    "passwordTooLong": "Password is too long",
+    "submit": "Submit"
+  },
+  "signUpPage": {
+    "title": "Sign Up",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "required": "Required",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "passwordTooShort": "Password is too short",
+    "passwordTooLong": "Password is too long",
+    "invalidEmail": "Invalid email",
+    "alreadyHaveAnAccount": "Already have an account? Sign in",
+    "submit": "Submit"
+  },
+  "forgotPasswordPage": {
+    "forgotPasswordTitle": "Forgot Password",
+    "email": "Your Email",
+    "emailPlaceholder": "Type your email here",
+    "invalidEmail": "Invalid email",
+    "sendEmail": "Send email",
+    "anEmailWasSent": "A verification code was sent to your email",
+
+    "codeVerificationTitle": "Code Verification",
+    "verificationLabel": "Verification code",
+    "verificationCodePlaceholder": "Type your verification code here",
+    "codeMustBeSixDigits": "Code must be 6 digits",
+
+    "resetPasswordTitle": "Reset Password",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Type your new password here",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Type your confirm password here",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "passwordTooShort": "Password is too short",
+    "passwordTooLong": "Password is too long",
+    "submit": "Submit",
+
+    "required": "Required",
+
+    "signIn": "Sign in",
+    "signUp": "Sign up"
+  },
   "homePage": {
     "title": "All Recipes",
     "description": "Your ",
@@ -36,7 +92,12 @@
       "servings": "Servings",
       "timeToCook": "Time to Cook",
       "calories": "Calories",
-      "temperature": "Temperature"
+      "temperature": "Temperature",
+      "validation": {
+        "required": "Required",
+        "tooShort": "Too Short",
+        "tooLong": "Too Long"
+      }
     }
   },
 

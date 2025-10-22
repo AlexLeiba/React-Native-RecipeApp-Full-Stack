@@ -1,67 +1,128 @@
 import * as Yup from "yup";
+import { useTranslation } from "react-i18next";
 
-export const newRecipeSchema = Yup.object().shape({
-  title: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
-  description: Yup.string()
-    .optional()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!"),
-  image: Yup.string().optional(),
+function useNewRecipeSchema() {
+  const { t } = useTranslation();
 
-  ingredients: Yup.string().required("Required"),
-  servings: Yup.number().required("Required").min(1, "Required"),
-  timeToCook: Yup.number().required("Required").min(1, "Required"),
-  calories: Yup.number().optional(),
-  temperature: Yup.number().optional(),
+  return Yup.object().shape({
+    title: Yup.string()
+      .min(2, t("newRecipePage.form.validation.required"))
+      .max(50, t("newRecipePage.form.validation.tooLong"))
+      .required("Required"),
+    description: Yup.string()
+      .optional()
+      .min(2, t("newRecipePage.form.validation.tooShort"))
+      .max(50, t("newRecipePage.form.validation.tooLong")),
+    image: Yup.string().optional(),
 
-  category: Yup.string().required("Required"),
-  link: Yup.boolean().optional(),
-  linkName: Yup.string().optional(),
-  linkUrl: Yup.string().optional(),
-});
+    ingredients: Yup.string().required(
+      t("newRecipePage.form.validation.required")
+    ),
+    servings: Yup.number()
+      .required(t("newRecipePage.form.validation.required"))
+      .min(1, t("newRecipePage.form.validation.required")),
+    timeToCook: Yup.number()
+      .required(t("newRecipePage.form.validation.required"))
+      .min(1, t("newRecipePage.form.validation.required")),
+    calories: Yup.number().optional(),
+    temperature: Yup.number().optional(),
 
-export const loginSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Required"),
-  password: Yup.string()
-    .required("Required")
-    .min(8, "Password is too short!")
-    .max(20, "Password is too long!"),
-});
+    category: Yup.string().required(
+      t("newRecipePage.form.validation.required")
+    ),
+    link: Yup.boolean().optional(),
+    linkName: Yup.string().optional(),
+    linkUrl: Yup.string().optional(),
+  });
+}
 
-export const registerSchema = Yup.object().shape({
-  username: Yup.string()
-    .required("Required")
-    .min(2, "Too Short!")
-    .max(20, "Too Long!"),
-  email: Yup.string().email("Invalid email").required("Required"),
-  password: Yup.string()
-    .required("Required")
-    .min(8, "Password is too short!")
-    .max(20, "Password is too long!"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password")], "Passwords must match")
-    .required("Required"),
-});
+function useLoginSchema() {
+  const { t } = useTranslation();
 
-export const forgotPasswordSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Required"),
-});
+  return Yup.object().shape({
+    email: Yup.string()
+      .email(t("signInPage.invalidEmail"))
+      .required(t("signInPage.required")),
+    password: Yup.string()
+      .required(t("signInPage.required"))
+      .min(8, t("signInPage.passwordTooShort"))
+      .max(20, t("signInPage.passwordTooLong")),
+  });
+}
 
-export const checkOtpSchema = Yup.object().shape({
-  code: Yup.string()
-    .required("Required")
-    .min(6, "Code must be 6 digits")
-    .max(6, "Code must be 6 digits"),
-});
+function useRegisterSchema() {
+  const { t } = useTranslation();
 
-export const changePasswordSchema = Yup.object().shape({
-  newPassword: Yup.string()
-    .required("Required")
-    .min(8, "Password is too short!"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("newPassword")], "Passwords must match")
-    .required("Required"),
-});
+  return Yup.object().shape({
+    username: Yup.string()
+      .required(t("signUpPage.required"))
+      .min(2, t("signUpPage.passwordTooShort"))
+      .max(20, t("signUpPage.passwordTooLong")),
+    email: Yup.string()
+      .email(t("signUpPage.invalidEmail"))
+      .required(t("signUpPage.required")),
+    password: Yup.string()
+      .required(t("signUpPage.required"))
+      .min(8, t("signUpPage.passwordTooShort"))
+      .max(20, t("signUpPage.passwordTooLong")),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("password")], t("signUpPage.passwordsDoNotMatch"))
+      .required(t("signUpPage.required")),
+  });
+}
+
+function useForgotPasswordSchema() {
+  const { t } = useTranslation();
+
+  return Yup.object().shape({
+    email: Yup.string()
+      .email(t("forgotPasswordPage.invalidEmail"))
+      .required(t("forgotPasswordPage.required")),
+  });
+}
+
+function useCheckOtpSchema() {
+  const { t } = useTranslation();
+
+  return Yup.object().shape({
+    code: Yup.string()
+      .required(t("forgotPasswordPage.required"))
+      .min(6, t("forgotPasswordPage.codeMustBeSixDigits"))
+      .max(6, t("forgotPasswordPage.codeMustBeSixDigits")),
+  });
+}
+
+function useChangePasswordSchema() {
+  const { t } = useTranslation();
+
+  return Yup.object().shape({
+    newPassword: Yup.string()
+      .required(t("forgotPasswordPage.required"))
+      .min(8, t("forgotPasswordPage.passwordTooShort"))
+      .max(20, t("forgotPasswordPage.passwordTooLong")),
+    confirmPassword: Yup.string()
+      .oneOf(
+        [Yup.ref("newPassword")],
+        t("forgotPasswordPage.passwordsDoNotMatch")
+      )
+      .required(t("forgotPasswordPage.required")),
+  });
+}
+
+export function useSchemas() {
+  const loginSchema = useLoginSchema();
+  const registerSchema = useRegisterSchema();
+  const forgotPasswordSchema = useForgotPasswordSchema();
+  const checkOtpSchema = useCheckOtpSchema();
+  const changePasswordSchema = useChangePasswordSchema();
+  const newRecipeSchema = useNewRecipeSchema();
+
+  return {
+    loginSchema,
+    registerSchema,
+    forgotPasswordSchema,
+    checkOtpSchema,
+    changePasswordSchema,
+    newRecipeSchema,
+  };
+}

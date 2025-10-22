@@ -5,6 +5,7 @@ import { initReactI18next } from "react-i18next";
 // Import translation files
 import en from "../translation/en.json";
 import ro from "../translation/ro.json";
+import { LANGUAGE_KEY } from "@/constants/MockData";
 
 // Define your resources
 const resources = {
@@ -14,7 +15,6 @@ const resources = {
 
 // Define your resources
 
-const LANGUAGE_KEY = "recipe-language";
 export const initI18n = async () => {
   // Try loading saved language from AsyncStorage
   const savedLang = await AsyncStorage.getItem(LANGUAGE_KEY);
@@ -28,6 +28,7 @@ export const initI18n = async () => {
 
   // Save language when changed
   i18n.on("languageChanged", async (lng) => {
+    console.log("lang changes");
     await AsyncStorage.setItem(LANGUAGE_KEY, lng);
   });
 

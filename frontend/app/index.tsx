@@ -6,17 +6,25 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Formik } from "formik";
-import { loginSchema } from "@/constants/schemas";
-import { Toast } from "toastify-react-native";
+
+// import { Toast } from "toastify-react-native";
 import { useAuth } from "@/context/AuthContext";
+import { useTranslation } from "react-i18next";
+import { useSchemas } from "@/constants/schemas";
+import { LanguageDropdown } from "@/components/Language/LanguageDropdown";
 
 function SignInPage() {
+  const { t } = useTranslation();
+  const { loginSchema } = useSchemas();
   const router = useRouter();
   const { handleSignIn } = useAuth();
 
   return (
     <ThemedView style={styles.container}>
-      <H1>Sign In</H1>
+      <View style={styles.languagesContainer}>
+        <LanguageDropdown />
+      </View>
+      <H1>{t("signInPage.title")}</H1>
 
       <Formik
         validationSchema={loginSchema}
@@ -25,7 +33,6 @@ function SignInPage() {
           (values) => {
             console.log("values", values);
 
-            Toast.success("Login successful");
             // TODO send data from Backend to handleSignIn
             handleSignIn({
               username: "username",
@@ -44,36 +51,37 @@ function SignInPage() {
           return (
             <View style={styles.inputsContainer}>
               <Input
-                label="Email"
+                label={t("signInPage.email")}
                 handleChange={handleChange("email")}
                 value={values.email}
                 errorMessage={errors.email}
+                placeholder={t("signInPage.emailPlaceholder")}
               />
 
               <Input
-                label="Password"
+                label={t("signInPage.password")}
                 handleChange={handleChange("password")}
                 value={values.password}
                 errorMessage={errors.password}
+                placeholder={t("signInPage.passwordPlaceholder")}
               />
               <View>
                 <Button
                   type="ghost"
                   handlePress={() => router.push("/sign-up")}
                 >
-                  <Paragraph>Dont have an account</Paragraph>
-                  <Paragraph>Sign up</Paragraph>
+                  <Paragraph>{t("signInPage.doNotHaveAnAccount")}</Paragraph>
                 </Button>
                 <Button
                   type="ghost"
                   handlePress={() => router.push("/forgot-password")}
                 >
-                  <Paragraph>Forgot password</Paragraph>
+                  <Paragraph>{t("signInPage.forgotPassword")}</Paragraph>
                 </Button>
               </View>
 
               <Button type="secondary" handlePress={handleSubmit}>
-                <H2 style={{ color: "black" }}>Submit</H2>
+                <H2 style={{ color: "black" }}>{t("signInPage.submit")}</H2>
               </Button>
             </View>
           );
@@ -96,6 +104,11 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "column",
     gap: 20,
+  },
+  languagesContainer: {
+    position: "absolute",
+    top: 20,
+    right: 0,
   },
 });
 

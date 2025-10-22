@@ -6,13 +6,16 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Formik } from "formik";
-import { registerSchema } from "@/constants/schemas";
+import { useSchemas } from "@/constants/schemas";
+import { useTranslation } from "react-i18next";
 
 function SignInPage() {
   const router = useRouter();
+  const { registerSchema } = useSchemas();
+  const { t } = useTranslation();
   return (
     <ThemedView style={styles.container}>
-      <H1>Sign up</H1>
+      <H1>{t("signUpPage.title")}</H1>
 
       <Formik
         validationSchema={registerSchema}
@@ -30,43 +33,42 @@ function SignInPage() {
           return (
             <View style={styles.inputsContainer}>
               <Input
-                label="Username"
+                label={t("signUpPage.username")}
                 handleChange={handleChange("username")}
                 value={values.username}
-                placeholder="Type username"
+                placeholder={t("signUpPage.username")}
                 errorMessage={errors.username}
               />
               <Input
-                label="Email"
+                label={t("signUpPage.email")}
                 handleChange={handleChange("email")}
                 value={values.email}
-                placeholder="Type email"
+                placeholder={t("signUpPage.email")}
                 errorMessage={errors.email}
               />
               <Input
+                label={t("signUpPage.password")}
                 inputType="password"
-                label="Password"
                 handleChange={handleChange("password")}
                 value={values.password}
-                placeholder="Type password"
+                placeholder={t("signUpPage.password")}
                 errorMessage={errors.password}
               />
               <Input
+                label={t("signUpPage.confirmPassword")}
                 inputType="password"
-                label="Confirm Password"
                 handleChange={handleChange("confirmPassword")}
                 value={values.confirmPassword}
-                placeholder="Confirm password"
+                placeholder={t("signUpPage.confirmPassword")}
                 errorMessage={errors.confirmPassword}
               />
 
               <Button type="ghost" handlePress={() => router.push("/")}>
-                <Paragraph>Already have an account?</Paragraph>
-                <Paragraph>Sign in</Paragraph>
+                <Paragraph>{t("signUpPage.alreadyHaveAnAccount")}</Paragraph>
               </Button>
 
               <Button type="secondary" handlePress={handleSubmit}>
-                <H2 style={{ color: "black" }}>Submit</H2>
+                <H2 style={{ color: "black" }}>{t("signUpPage.submit")}</H2>
               </Button>
             </View>
           );

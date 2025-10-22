@@ -1,50 +1,108 @@
 {
+  "signInPage": {
+    "title": "Autentificare",
+    "email": "Email",
+    "emailPlaceholder": "Introdu adresa ta de email",
+    "invalidEmail": "Email invalid",
+    "password": "Parolă",
+    "passwordPlaceholder": "Introdu parola ta",
+    "required": "Obligatoriu",
+    "doNotHaveAnAccount": "Nu ai un cont? Înregistrează-te",
+    "forgotPassword": "Ai uitat parola",
+    "passwordTooShort": "Parola este prea scurtă",
+    "passwordTooLong": "Parola este prea lungă",
+    "submit": "Trimite"
+  },
+  "signUpPage": {
+    "title": "Înregistrare",
+    "username": "Nume utilizator",
+    "email": "Email",
+    "password": "Parolă",
+    "confirmPassword": "Confirmă parola",
+    "required": "Obligatoriu",
+    "passwordsDoNotMatch": "Parolele nu se potrivesc",
+    "passwordTooShort": "Parola este prea scurtă",
+    "passwordTooLong": "Parola este prea lungă",
+    "invalidEmail": "Email invalid",
+    "alreadyHaveAnAccount": "Ai deja un cont? Autentifică-te",
+    "submit": "Trimite"
+  },
+  "forgotPasswordPage": {
+    "forgotPasswordTitle": "Reseteaza parola",
+    "email": "Emailul tău",
+    "emailPlaceholder": "Introdu adresa ta de email",
+    "invalidEmail": "Email invalid",
+    "sendEmail": "Trimite email",
+    "anEmailWasSent": "Un cod de verificare a fost trimis pe adresa ta de email",
+
+    "codeVerificationTitle": "Verificare cod",
+    "verificationLabel": "Cod de verificare",
+    "verificationCodePlaceholder": "Introdu codul tău de verificare aici",
+    "codeMustBeSixDigits": "Codul trebuie să aibă 6 cifre",
+
+    "resetPasswordTitle": "Resetează parola",
+    "newPassword": "Parolă nouă",
+    "newPasswordPlaceholder": "Introdu noua ta parolă",
+    "confirmPassword": "Confirmă parola",
+    "confirmPasswordPlaceholder": "Introdu din nou parola",
+    "passwordsDoNotMatch": "Parolele nu se potrivesc",
+    "passwordTooShort": "Parola este prea scurtă",
+    "passwordTooLong": "Parola este prea lungă",
+    "submit": "Trimite",
+
+    "required": "Obligatoriu",
+
+    "signIn": "Autentificare",
+    "signUp": "Înregistrare"
+  },
   "homePage": {
-    "title": "Toate Rețetele",
+    "title": "Toate rețetele",
     "description": "Mâncarea ta ",
-    "description2": "Sănătoasă ",
-    "description3": "Gătită ",
-    "description4": "Acasă",
+    "description2": "sănătoasă ",
+    "description3": "pregătită acasă ",
+    "description4": "cu ușurință",
     "category": "Categorie",
-    "myRecipes": "Rețetele Mele",
+    "myRecipes": "Rețetele mele",
     "favorites": "Favorite"
   },
   "myRecipesPage": {
-    "title": "Rețetele Mele",
-    "addNewRecipe": "Adaugă rețetă nouă",
-    "noRecipies": "Nu au fost găsite rețete"
+    "title": "Rețetele mele",
+    "addNewRecipe": "Adaugă o rețetă nouă",
+    "noRecipies": "Nicio rețetă găsită"
   },
   "newRecipePage": {
-    "newTitle": "Adaugă rețetă nouă",
+    "newTitle": "Adaugă o rețetă nouă",
     "editTitle": "Editează rețeta",
     "save": "Salvează",
     "delete": "Șterge",
     "form": {
       "placeholderTypeHere": "scrie aici ",
       "addALink": "Adaugă un link",
-      "linkName": "Nume link",
-      "linkUrl": "Adresă link",
-      "placeholderLinkName": "scrie aici numele linkului...",
-      "placeholderLinkUrl": "scrie aici adresa linkului...",
+      "linkName": "Numele linkului",
+      "linkUrl": "Adresa linkului",
+      "placeholderLinkName": "scrie numele linkului...",
+      "placeholderLinkUrl": "scrie adresa linkului...",
       "title": "Titlu",
       "description": "Descriere",
       "ingredients": "Ingrediente (separate prin virgulă)",
       "placeholderIngredients": "separă ingredientele prin virgulă...",
       "category": "Categorie",
-      "cookingDetails": "Detalii de Gătire",
+      "cookingDetails": "Detalii de gătire",
       "difficulty": "Dificultate",
       "servings": "Porții",
-      "timeToCook": "Timp de Gătire",
+      "timeToCook": "Timp de gătire",
       "calories": "Calorii",
       "temperature": "Temperatură"
     }
   },
+
   "detailsRecipePage": {
     "min": "min",
     "people": "persoane",
     "ingredients": "Ingrediente",
     "recipeNotFound": "Rețeta nu a fost găsită"
   },
+
   "favoritesPage": {
     "title": "Favorite"
   },
@@ -55,16 +113,16 @@
     "save": "Salvează"
   },
   "editProfilePage": {
-    "title": "Editează Profilul",
+    "title": "Editează profilul",
     "save": "Salvează",
     "name": "Nume",
     "password": "Parolă",
-    "repeatPassword": "Repetă Parola"
+    "repeatPassword": "Repetă parola"
   },
   "myProfilePage": {
-    "title": "Profilul Meu",
-    "logout": "Deconectează-te",
-    "editProfile": "Editează Profilul",
+    "title": "Profilul meu",
+    "logout": "Deconectare",
+    "editProfile": "Editează profilul",
     "settings": "Setări"
   },
   "searchForRecipe": {

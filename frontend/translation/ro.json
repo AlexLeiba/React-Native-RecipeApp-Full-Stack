@@ -57,10 +57,9 @@
   },
   "homePage": {
     "title": "Toate rețetele",
-    "description": "Mâncarea ta ",
-    "description2": "sănătoasă ",
-    "description3": "pregătită acasă ",
-    "description4": "cu ușurință",
+    "description": "Mâncarea acasa",
+    "description2": "sănătoasă",
+
     "category": "Categorie",
     "myRecipes": "Rețetele mele",
     "favorites": "Favorite"
@@ -123,7 +122,9 @@
     "title": "Profilul meu",
     "logout": "Deconectare",
     "editProfile": "Editează profilul",
-    "settings": "Setări"
+    "settings": "Setări",
+    "newRecipe": "New recipe",
+    "categorySettings": "Category settings"
   },
   "searchForRecipe": {
     "title": "Caută o rețetă"

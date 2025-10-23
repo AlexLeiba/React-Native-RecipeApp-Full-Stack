@@ -57,10 +57,8 @@
   },
   "homePage": {
     "title": "All Recipes",
-    "description": "Your ",
+    "description": "Food home",
     "description2": "Healthy ",
-    "description3": "Food at ",
-    "description4": "Home",
     "category": "Category",
     "myRecipes": "My Recipes",
     "favorites": "Favorites"
@@ -128,7 +126,9 @@
     "title": "My Profile",
     "logout": "Logout",
     "editProfile": "Edit Profile",
-    "settings": "Settings"
+    "settings": "Settings",
+    "newRecipe": "New recipe",
+    "categorySettings": "Category settings"
   },
   "searchForRecipe": {
     "title": "Search for recipe"

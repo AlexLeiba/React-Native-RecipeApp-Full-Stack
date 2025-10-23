@@ -17,11 +17,11 @@ import { DropDown } from "@/components/ui/dropdown";
 import { Input } from "@/components/ui/input";
 import SwitchComponent from "@/components/ui/switch";
 import { CATEGORIES_DATA } from "@/constants/MockData";
-import { newRecipeSchema } from "@/constants/schemas";
-import { newRecipe } from "@/store/slices/recipeReducer";
+import { newRecipe } from "@/store/slices/recipesReducer";
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
+import { useSchemas } from "@/constants/schemas";
 
 const initialStateForm = {
   id: 0,
@@ -40,6 +40,7 @@ const initialStateForm = {
 };
 
 function NewRecipePage() {
+  const { newRecipeSchema } = useSchemas();
   const { t } = useTranslation();
   const [scrollY, setScrollY] = useState(0);
   const router = useRouter();
@@ -54,9 +55,8 @@ function NewRecipePage() {
     <>
       <Header
         withArrowBack
-        backPath="/my-recipe-page"
         scrollOffset={scrollY}
-        title="New recipe"
+        title={t("newRecipePage.newTitle")}
       />
       <ScrollView onScroll={handleScroll}>
         <ThemedView>
@@ -91,7 +91,7 @@ function NewRecipePage() {
                     ),
                   })
                 );
-                router.push("/my-recipe-page");
+                router.push("/dashboard");
               }
 
               // save to redux and redirect to my recipies

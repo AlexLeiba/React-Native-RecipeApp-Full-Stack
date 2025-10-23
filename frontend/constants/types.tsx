@@ -1,3 +1,11 @@
+export type NetworkActivitiesType = {
+  status: string;
+  errorMessage?: string;
+  error: boolean;
+  success: boolean;
+  loading: boolean;
+};
+
 export type UserType = {
   _id?: string;
   username: string;

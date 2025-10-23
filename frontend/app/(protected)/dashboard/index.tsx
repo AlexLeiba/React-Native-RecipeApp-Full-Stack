@@ -5,9 +5,12 @@ import { CategoryCardSkeleton } from "@/components/skeletons/CategoryCardSkeleto
 import { RecipeCardSkeleton } from "@/components/skeletons/RecipeCardSkeleton";
 import { ThemedView } from "@/components/themed-view";
 import { H1, H3 } from "@/components/typography/typography";
+import { Button } from "@/components/ui/button";
 import { globalStyles } from "@/constants/stylesheets";
 import { CategoryType } from "@/constants/types";
 import { RootState } from "@/store/config";
+import { useRouter } from "expo-router";
+import { Plus } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -16,12 +19,14 @@ import {
   NativeSyntheticEvent,
   ScrollView,
   useColorScheme,
+  View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 function HomePage() {
   const { t } = useTranslation();
   const [scrollY, setScrollY] = useState(0);
+  const router = useRouter();
 
   const theme = useColorScheme() ?? "light";
   const categoriesData = useSelector((state: RootState) => state.categories);
@@ -54,6 +59,10 @@ function HomePage() {
     setScrollY(yOffset);
   };
 
+  function handleAddNewRecipe() {
+    router.push("/recipe/new-recipe");
+  }
+
   return (
     <>
       <Header withSearch scrollOffset={scrollY} title={t("homePage.title")} />
@@ -64,13 +73,10 @@ function HomePage() {
         }}
         style={{ paddingTop: 110, paddingBottom: 60 }}
       >
-        <ThemedView style={{ marginBottom: 20 }}>
-          <H1>
-            {t("homePage.description")}
-            <H1 style={{ color: "#1cb926cf" }}>{t("homePage.description2")}</H1>
-            {t("homePage.description3")}
-            <H1 style={{ color: "#ffd036cf" }}>{t("homePage.description4")}</H1>
-          </H1>
+        <ThemedView style={{ marginBottom: 20, flexDirection: "row" }}>
+          <H1 style={{ color: "#ffd036cf" }}>{t("homePage.description")}</H1>
+          <H1>=</H1>
+          <H1 style={{ color: "#1cb926cf" }}>{t("homePage.description2")}</H1>
         </ThemedView>
 
         {/* CATEGORIES SECTION */}
@@ -98,13 +104,39 @@ function HomePage() {
             <FlatList
               scrollEnabled={false}
               ListHeaderComponent={() => (
-                <H3 style={{ color: "#fff236cf" }}>{category?.name}</H3>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <H3 style={{ color: "#fff236cf" }}>{category?.name}</H3>
+                  <Button
+                    handlePress={handleAddNewRecipe}
+                    type="secondary"
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 50,
+                      borderColor: "#fff236cf",
+                      borderWidth: 2,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Plus
+                      size={20}
+                      color={theme === "light" ? "black" : "white"}
+                    />
+                  </Button>
+                </View>
               )}
               //
               columnWrapperStyle={{ marginTop: 30 }}
               numColumns={2}
               contentContainerStyle={{ gap: 5 }}
-              data={recipesData}
+              data={recipesData.items}
               renderItem={({ item }) => {
                 return <RecipeCard data={item} />;
               }}

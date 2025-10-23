@@ -14,14 +14,12 @@ import UserProfile from "../UserProfile/UserProfile";
 
 type HeaderProps = {
   scrollOffset: number;
-  backPath?: "/dashboard" | "/favorites" | "/profile" | "/";
   withArrowBack?: boolean;
   title: string;
   withSearch?: boolean;
 };
 function Header({
   scrollOffset,
-  backPath = "/",
   withArrowBack = false,
   title,
   withSearch = false,
@@ -43,7 +41,7 @@ function Header({
   }, [scrollOffset]);
 
   function handleBack() {
-    router.push(`${backPath}`);
+    router.back();
   }
 
   function handleSearch() {

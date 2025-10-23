@@ -10,16 +10,12 @@ import { DropDown } from "@/components/ui/dropdown";
 import { Input } from "@/components/ui/input";
 import SwitchComponent from "@/components/ui/switch";
 import { CATEGORIES_DATA } from "@/constants/MockData";
-import { newRecipeSchema } from "@/constants/schemas";
 import { RootState } from "@/store/config";
-import {
-  deleteRecipe,
-  editRecipe,
-  RecipeType,
-} from "@/store/slices/recipeReducer";
+import { deleteRecipe, editRecipe } from "@/store/slices/recipesReducer";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
+import { useSchemas } from "@/constants/schemas";
 
 const initialStateForm = {
   id: 0,
@@ -38,6 +34,7 @@ const initialStateForm = {
 };
 
 function EditRecipePage() {
+  const { editRecipeSchema } = useSchemas();
   const { t } = useTranslation();
   const [recipeData, setRecipeData] = useState<RecipeType>(initialStateForm);
   const router = useRouter();
@@ -57,7 +54,7 @@ function EditRecipePage() {
 
   function handleDelete() {
     dispatch(deleteRecipe(Number(recipeId)));
-    router.push("/my-recipe-page");
+    router.push("/dashboard");
   }
 
   return (
@@ -79,11 +76,11 @@ function EditRecipePage() {
         <Formik
           enableReinitialize
           initialValues={recipeData}
-          validationSchema={newRecipeSchema}
+          validationSchema={editRecipeSchema}
           onSubmit={
             (values) => {
               dispatch(editRecipe({ ...values, id: Number(recipeId) }));
-              router.push("/my-recipe-page");
+              router.push("/dashboard");
             }
 
             // save to redux and redirect to my recipies

@@ -45,6 +45,16 @@ function ProfilePage() {
             type="secondary"
             handlePress={handleSettings}
           />
+          <Button
+            title={t("myProfilePage.newRecipe")}
+            type="secondary"
+            handlePress={handleSettings}
+          />
+          <Button
+            title={t("myProfilePage.categorySettings")}
+            type="secondary"
+            handlePress={handleSettings}
+          />
         </View>
 
         <View style={{ marginBottom: 50 }}>

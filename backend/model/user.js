@@ -37,6 +37,10 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  notifications: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const UserModel = mongoose.model("User", UserSchema);

@@ -22,7 +22,7 @@ app.use(express.json()); // for parsing application/json / req body to json form
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 // use routes
-app.use("/api", authRoute);
+app.use("/api", authRoute); //public routes
 app.use("/api", verifyJWT, recipeRoute);
 app.use("/api", verifyJWT, categoriesRoute);
 app.use("/api", verifyJWT, settingsRoute);

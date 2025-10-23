@@ -10,10 +10,10 @@ const {
 
 const router = express.Router();
 
-router.post("/create-recipe", createRecipeController);
-router.get("/get-recipe", getRecipesController);
-router.get("/get-recipe/:id", getRecipeController);
-router.put("/update-recipe/:id", updateRecipeController);
-router.delete("/delete-recipe/:id", deleteRecipeController);
+router.post("/recipes", createRecipeController);
+router.get("/recipes", getRecipesController);
+router.get("/recipes/:id", getRecipeController);
+router.put("/recipes/:id", updateRecipeController);
+router.delete("/recipes/:id", deleteRecipeController);
 
 module.exports = router;

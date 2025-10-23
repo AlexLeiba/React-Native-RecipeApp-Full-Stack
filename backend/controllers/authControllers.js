@@ -35,7 +35,7 @@ async function loginController(req, res) {
       },
       process.env.JWT_SECRET_REFRESH_TOKEN,
       {
-        expiresIn: "1m",
+        expiresIn: "2d",
       }
     );
 
@@ -59,7 +59,8 @@ async function loginController(req, res) {
       },
       process.env.JWT_SECRET_ACCESS_TOKEN,
       {
-        expiresIn: "30s",
+        // TODO, change expires to 15 min
+        expiresIn: "1d",
       }
     );
 
@@ -306,7 +307,8 @@ async function refreshTokenController(req, res) {
             roles: foundUser.roles,
           },
           process.env.JWT_SECRET_ACCESS_TOKEN,
-          { expiresIn: "30s" }
+          // TODO change to 15 min
+          { expiresIn: "1d" }
         );
 
         if (!jwtNewAccessToken) {

@@ -48,6 +48,10 @@ const RecipeSchema = new mongoose.Schema({
       },
     ],
   },
+  isFavorite: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const RecipeModel = mongoose.model("Recipe", RecipeSchema);

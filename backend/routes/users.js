@@ -13,7 +13,7 @@ router.get("/users", getAllUsersController);
 
 router.get("/users/:id", getUserController);
 
-router.post("/users", editUserController);
+router.post("/users/:id", editUserController);
 
 router.delete("/users/:id", deteleUserController);
 

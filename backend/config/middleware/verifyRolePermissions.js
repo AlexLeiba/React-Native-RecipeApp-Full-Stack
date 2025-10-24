@@ -23,7 +23,7 @@ function verifyRolePermissions(permissionOptions) {
       if (permissionOptions) {
         const userRoles = Object.values(decoded.roles);
         console.log("🚀 ~ rolePermissions ~ userRoles:", userRoles);
-        const hasPermission = permissionOptions.every((permission) =>
+        const hasPermission = permissionOptions.some((permission) =>
           userRoles.includes(permission)
         );
         console.log("🚀 ~ rolePermissions ~ hasPermission:", hasPermission);

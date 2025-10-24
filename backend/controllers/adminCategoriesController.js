@@ -1,6 +1,7 @@
 const CategoryModel = require("../model/category");
 const RecipeModel = require("../model/recipe");
 const UserModel = require("../model/user");
+const ActivitiesModel = require("../model/activities");
 
 async function getCategoriesController(req, res) {
   if (!req.user) return res.status(403).json({ message: "Forbidden" });
@@ -9,32 +10,7 @@ async function getCategoriesController(req, res) {
   if (!userEmail) return res.status(403).json({ message: "Forbidden" });
 
   try {
-    const foundUser = await UserModel.findOne({ email: userEmail });
-
-    const foundAdmin = await UserModel.findOne({
-      roles: { user: "user", admin: "admin" },
-    });
-
-    if (!foundUser) {
-      res.status(400).json({ message: "User not found" });
-    }
-
-    const foundCategories = await CategoryModel.find({
-      userId: foundUser._id,
-    });
-
-    // If admin has categories return all of them, if not return only user categories
-    if (foundAdmin && foundAdmin._id === foundUser._id) {
-      const foundAdminCategories = await CategoryModel.find({
-        userId: foundAdmin._id,
-      });
-
-      if (foundAdminCategories && foundAdminCategories.length > 0) {
-        return res
-          .status(200)
-          .json({ data: [...foundCategories, ...foundAdminCategories] });
-      }
-    }
+    const foundCategories = await CategoryModel.find();
 
     res.status(200).json({ data: foundCategories });
   } catch (error) {
@@ -78,6 +54,11 @@ async function createCategoryController(req, res) {
     if (!foundUser) return res.status(400).json({ message: "User not found" });
 
     await CategoryModel.create({ ...categoryBody, userId: foundUser._id });
+    await ActivitiesModel.create({
+      userId: foundUser._id,
+      userEmail: foundUser.email,
+      action: "Created a category",
+    });
 
     res.status(201).json({ message: "The category was created successfully" });
   } catch (error) {
@@ -107,6 +88,13 @@ async function updateCategoryController(req, res) {
       categoryBody
     );
 
+    await ActivitiesModel.create({
+      userId: foundUser._id,
+      userEmail: foundUser.email,
+      action: "Updated a category",
+      modifiedElementId: categoryId,
+    });
+
     res.status(200).json({ message: "The category was updated successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -131,7 +119,6 @@ async function deleteCategoryController(req, res) {
     }
 
     const foundRecipesWithSelectedCategory = await RecipeModel.find({
-      userId: foundUser._id,
       categoryId: categoryId,
     });
 
@@ -145,8 +132,14 @@ async function deleteCategoryController(req, res) {
     }
 
     await CategoryModel.findOneAndDelete({
-      userId: foundUser._id,
       _id: categoryId,
+    });
+
+    await ActivitiesModel.create({
+      userId: foundUser._id,
+      userEmail: foundUser.email,
+      action: "Deleted a category",
+      modifiedElementId: categoryId,
     });
 
     res.status(200).json({ message: "The category was deleted successfully" });

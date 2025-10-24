@@ -1,5 +1,6 @@
 const RecipeModel = require("../model/recipe");
 const UserModel = require("../model/user");
+const ActivitiesModel = require("../model/activities");
 async function getRecipesController(req, res) {
   if (!req.user) {
     res.status(403).json({ message: "Forbidden" });
@@ -11,28 +12,12 @@ async function getRecipesController(req, res) {
 
   try {
     const foundUser = await UserModel.findOne({ email: userEmail });
-    const foundAdmin = await UserModel.findOne({
-      roles: { user: "user", admin: "admin" },
-    });
 
     if (!foundUser) {
       res.status(400).json({ message: "User not found" });
     }
 
-    const foundRecipes = await RecipeModel.find({ userId: foundUser._id });
-
-    // If admin has recipes return all of them, if not return only user recipes
-    if (foundAdmin && foundAdmin._id !== foundUser._id) {
-      const foundAdminRecipes = await RecipeModel.find({
-        userId: foundAdmin._id,
-      });
-
-      if (foundAdminRecipes && foundAdminRecipes.length > 0) {
-        return res
-          .status(200)
-          .json({ data: [...foundRecipes, ...foundAdminRecipes] });
-      }
-    }
+    const foundRecipes = await RecipeModel.find();
 
     res.status(200).json({ data: foundRecipes });
   } catch (error) {
@@ -90,6 +75,11 @@ async function createRecipeController(req, res) {
     }
 
     await RecipeModel.create({ ...recipeBody, userId: foundUser._id });
+    await ActivitiesModel.create({
+      userId: foundUser._id,
+      userEmail: foundUser.email,
+      action: "Created a new recipe",
+    });
 
     res.status(201).json({ message: "Recipe was created successfully" });
   } catch (error) {
@@ -119,10 +109,13 @@ async function updateRecipeController(req, res) {
       res.status(400).json({ message: "User not found" });
     }
 
-    await RecipeModel.findOneAndUpdate(
-      { userId: foundUser._id, _id: recipeId },
-      recipeBody
-    );
+    await RecipeModel.findOneAndUpdate({ _id: recipeId }, recipeBody);
+    await ActivitiesModel.create({
+      userId: foundUser._id,
+      userEmail: foundUser.email,
+      action: "Updated a recipe",
+      modifiedElementId: recipeId,
+    });
 
     res.status(201).json({ message: "The recipe was updated successfully" });
   } catch (error) {
@@ -152,8 +145,14 @@ async function deleteRecipeController(req, res) {
     }
 
     await RecipeModel.findOneAndDelete({
-      userId: foundUser._id,
       _id: recipeId,
+    });
+
+    await ActivitiesModel.create({
+      userId: foundUser._id,
+      userEmail: foundUser.email,
+      action: "Deleted a recipe",
+      modifiedElementId: recipeId,
     });
 
     res.status(200).json({ message: "The recipe was deleted successfully" });

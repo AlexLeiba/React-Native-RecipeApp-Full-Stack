@@ -10,6 +10,8 @@ const recipeRoute = require("./routes/recipes");
 const categoriesRoute = require("./routes/categories");
 const settingsRoute = require("./routes/settings");
 const usersRoute = require("./routes/users");
+const adminRoutes = require("./routes/admin");
+
 const ROLES = require("./config/roles");
 
 // connect to mongoDB
@@ -26,7 +28,8 @@ app.use("/api", authRoute); //public routes
 app.use("/api", verifyJWT, recipeRoute);
 app.use("/api", verifyJWT, categoriesRoute);
 app.use("/api", verifyJWT, settingsRoute);
-app.use("/api", verifyRolesPermissions([ROLES.user, ROLES.admin]), usersRoute);
+app.use("/api", usersRoute);
+app.use("/admin", adminRoutes);
 
 // Error handling
 app.use((err, _, res) => {

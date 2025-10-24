@@ -223,7 +223,7 @@ async function checkOTPController(req, res) {
     }
 
     // if user was found and otp is valid and matches
-    foundUserWithOtp.otpVrified = true;
+    foundUserWithOtp.otpVerified = true;
     foundUserWithOtp.otp = null;
 
     foundUserWithOtp.save();
@@ -246,7 +246,7 @@ async function newPasswordController(req, res) {
     res.status(400).json({ message: "User not found" });
   }
 
-  const hasUserVerifiedOTP = foundUser.otpVrified;
+  const hasUserVerifiedOTP = foundUser.otpVerified;
   const hasExpiredOTP = foundUser.otpCreatedAt;
 
   if (!hasUserVerifiedOTP) {
@@ -257,7 +257,7 @@ async function newPasswordController(req, res) {
 
   // /if expired delete verified and time created
   if (hasExpiredOTP + otpExpireTime < now) {
-    foundUser.otpVrified = false;
+    foundUser.otpVerified = false;
     foundUser.otpCreatedAt = null;
     foundUser.save();
     res
@@ -267,7 +267,7 @@ async function newPasswordController(req, res) {
 
   //save new password in db
   foundUser.password = await bcrypt.hash(newPassword, 16);
-  foundUser.otpVrified = false;
+  foundUser.otpVerified = false;
   foundUser.otpCreatedAt = null;
   foundUser.save();
 

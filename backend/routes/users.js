@@ -1,4 +1,6 @@
 const express = require("express");
+const verifyRolesPermissions = require("../config/middleware/verifyRolePermissions");
+const ROLES = require("../config/roles");
 
 const {
   getAllUsersController,
@@ -9,12 +11,28 @@ const {
 
 const router = express.Router();
 
-router.get("/users", getAllUsersController);
+router.get(
+  "/users",
+  verifyRolesPermissions([ROLES.user, ROLES.admin, ROLES.editor]),
+  getAllUsersController
+);
 
-router.get("/users/:id", getUserController);
+router.get(
+  "/users/:id",
+  verifyRolesPermissions([ROLES.user, ROLES.admin, ROLES.editor]),
+  getUserController
+);
 
-router.post("/users/:id", editUserController);
+router.post(
+  "/users/:id",
+  verifyRolesPermissions([ROLES.user, ROLES.admin, ROLES.editor]),
+  editUserController
+);
 
-router.delete("/users/:id", deteleUserController);
+router.delete(
+  "/users/:id",
+  verifyRolesPermissions([ROLES.user, ROLES.admin]),
+  deteleUserController
+);
 
 module.exports = router;

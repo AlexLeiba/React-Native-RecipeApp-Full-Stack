@@ -1,58 +1,61 @@
 const mongoose = require("mongoose");
 
-const RecipeSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  image: {
-    type: String,
-    required: true,
-  },
-  userId: {
-    type: String,
-    required: true,
-  },
-  categoryId: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-  },
-  link: {
-    linkUrl: {
+const RecipeSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    image: {
+      type: String,
+      required: true,
+    },
+    userId: {
+      type: String,
+      required: true,
+    },
+    categoryId: {
+      type: String,
+      required: true,
+    },
+    description: {
       type: String,
     },
-    linkName: {
-      type: String,
-    },
-  },
-  details: {
-    timeToCook: {
-      type: Number,
-    },
-    servings: {
-      type: Number,
-    },
-    calories: {
-      type: Number,
-    },
-    temperature: {
-      type: Number,
-    },
-    ingredients: [
-      {
+    link: {
+      linkUrl: {
         type: String,
-        required: true,
       },
-    ],
+      linkName: {
+        type: String,
+      },
+    },
+    details: {
+      timeToCook: {
+        type: Number,
+      },
+      servings: {
+        type: Number,
+      },
+      calories: {
+        type: Number,
+      },
+      temperature: {
+        type: Number,
+      },
+      ingredients: [
+        {
+          type: String,
+          required: true,
+        },
+      ],
+    },
+    isFavorite: {
+      type: Boolean,
+      default: false,
+    },
   },
-  isFavorite: {
-    type: Boolean,
-    default: false,
-  },
-});
+  { timestamps: true }
+);
 
 const RecipeModel = mongoose.model("Recipe", RecipeSchema);
 

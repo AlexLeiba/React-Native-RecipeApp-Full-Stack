@@ -27,12 +27,7 @@ function ProfilePage() {
   }
   return (
     <>
-      <Header
-        withArrowBack
-        backPath="/"
-        scrollOffset={0}
-        title={t("myProfilePage.title")}
-      />
+      <Header withArrowBack scrollOffset={0} title={t("myProfilePage.title")} />
       <ThemedView style={[{ paddingTop: 100 }, styles.container]}>
         <View style={{ flexDirection: "column", gap: 20 }}>
           <Button

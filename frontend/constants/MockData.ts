@@ -46,11 +46,12 @@ export const FAVORITES: FavoritesType[] = [
 
 export const RECIPES: RecipesType[] = [
   {
-    name: "Beef",
+    name: "Recipe name",
     image: require("../assets/food-categories/beef.png"),
     _id: "123456",
     userId: "1111",
     categoryId: "111",
+    categoryName: "Cat name",
     description: "Some desc.",
     link: {
       linkUrl: "www.google.com",
@@ -81,11 +82,12 @@ export const RECIPES: RecipesType[] = [
     },
   },
   {
-    name: "Beef",
+    name: "Recipe name",
     image: require("../assets/food-categories/beef.png"),
     _id: "123456",
     userId: "1111",
     categoryId: "111",
+    categoryName: "Cat name",
     description: "Some desc.",
     link: {
       linkUrl: "www.google.com",
@@ -116,11 +118,12 @@ export const RECIPES: RecipesType[] = [
     },
   },
   {
-    name: "Dessert",
+    name: "Recipe Dessert",
     image: require("../assets/food-categories/dessert.webp"),
     _id: "1234567",
     userId: "1111",
     categoryId: "222",
+    categoryName: "cat name 22",
     description: "Some desc.",
     link: {
       linkUrl: "www.google.com",

@@ -11,8 +11,12 @@ import {
   View,
 } from "react-native";
 
-export function Avatar() {
-  const [selectedImage, setSelectedImage] = React.useState("");
+type AvatarProps = {
+  selectedImage: string;
+  handleSelectImage: (image: string) => void;
+};
+export function UploadImage({ selectedImage, handleSelectImage }: AvatarProps) {
+  // const [selectedImage, setSelectedImage] = React.useState("");
   const theme = useColorScheme() ?? "light";
   const avatarUrl =
     "https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=76&q=80";
@@ -34,7 +38,7 @@ export function Avatar() {
     });
 
     if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
+      handleSelectImage(result.assets[0].uri);
     }
   };
   return (

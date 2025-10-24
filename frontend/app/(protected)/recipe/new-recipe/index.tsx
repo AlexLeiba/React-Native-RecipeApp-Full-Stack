@@ -24,19 +24,23 @@ import { useDispatch } from "react-redux";
 import { useSchemas } from "@/constants/schemas";
 
 const initialStateForm = {
-  id: 0,
-  title: "",
-  description: "",
+  name: "",
   image: "",
-  ingredients: "",
+  _id: "",
+  userId: "",
+  categoryId: "",
+  categoryName: "",
+  description: "",
+
+  link: false,
+  linkUrl: "",
+  linkName: "",
+
   timeToCook: 0,
   servings: 0,
   calories: 0,
   temperature: 0,
-  link: false,
-  linkName: "",
-  linkUrl: "",
-  category: CATEGORIES_DATA[0].name,
+  ingredients: "",
 };
 
 function NewRecipePage() {
@@ -86,8 +90,7 @@ function NewRecipePage() {
                     ingredients: values.ingredients.split(","),
                     favorites: false,
                     category: CATEGORIES_DATA.find(
-                      (cat) =>
-                        cat.name.toLowerCase() === values.category.toLowerCase()
+                      (cat) => cat.name.toLowerCase() === values.categoryName
                     ),
                   })
                 );
@@ -111,9 +114,9 @@ function NewRecipePage() {
                   <Input
                     label={t("newRecipePage.form.title")}
                     placeholder={t("newRecipePage.form.placeholderTypeHere")}
-                    handleChange={handleChange("title")}
-                    value={values?.title || ""}
-                    errorMessage={errors.title}
+                    handleChange={handleChange("name")}
+                    value={values?.name || ""}
+                    errorMessage={errors.name}
                   />
                   <Input
                     label={t("newRecipePage.form.description")}
@@ -132,7 +135,7 @@ function NewRecipePage() {
                   <DropDown
                     options={CATEGORIES_DATA}
                     label="Category *"
-                    value={values.category}
+                    value={values.categoryName}
                     handleChange={(categoryValue) =>
                       setFieldValue("category", categoryValue)
                     }

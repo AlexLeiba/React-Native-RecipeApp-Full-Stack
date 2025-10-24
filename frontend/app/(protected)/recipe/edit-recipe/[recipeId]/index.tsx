@@ -16,37 +16,42 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useSchemas } from "@/constants/schemas";
+// import { RecipesType } from "@/constants/types";
 
 const initialStateForm = {
-  id: 0,
-  title: "",
-  description: "",
+  name: "",
   image: "",
-  ingredients: "",
+  _id: "",
+  userId: "",
+  categoryId: "",
+  categoryName: "",
+  description: "",
+
+  link: false,
+  linkUrl: "",
+  linkName: "",
+
   timeToCook: 0,
   servings: 0,
   calories: 0,
   temperature: 0,
-  link: false,
-  linkName: "",
-  linkUrl: "",
-  category: CATEGORIES_DATA[0],
+  ingredients: "",
 };
 
 function EditRecipePage() {
-  const { editRecipeSchema } = useSchemas();
+  const { newRecipeSchema } = useSchemas();
   const { t } = useTranslation();
-  const [recipeData, setRecipeData] = useState<RecipeType>(initialStateForm);
+  const [recipeData, setRecipeData] = useState(initialStateForm);
   const router = useRouter();
   const dispatch = useDispatch();
   const { recipeId } = useLocalSearchParams();
 
-  const selectedRecipeData = useSelector((state: RootState) => state.newRecipe);
+  const selectedRecipeData = useSelector(
+    (state: RootState) => state.recipes.items
+  );
 
   useEffect(() => {
-    const recipe = selectedRecipeData.find(
-      (recipe) => recipe.id === Number(recipeId)
-    );
+    const recipe = selectedRecipeData.find((recipe) => recipe._id === recipeId);
     if (recipe) {
       setRecipeData(recipe);
     }
@@ -75,8 +80,8 @@ function EditRecipePage() {
 
         <Formik
           enableReinitialize
-          initialValues={recipeData}
-          validationSchema={editRecipeSchema}
+          initialValues={initialStateForm}
+          validationSchema={newRecipeSchema}
           onSubmit={
             (values) => {
               dispatch(editRecipe({ ...values, id: Number(recipeId) }));
@@ -94,15 +99,15 @@ function EditRecipePage() {
                 <Input
                   label={t("newRecipePage.form.title")}
                   placeholder={t("newRecipePage.form.placeholderTypeHere")}
-                  handleChange={handleChange("title")}
-                  value={values?.title || ""}
-                  errorMessage={errors.title}
+                  handleChange={handleChange("name")}
+                  value={values?.name || ""}
+                  errorMessage={errors.name}
                 />
                 <Input
                   label={t("newRecipePage.form.description")}
                   placeholder={t("newRecipePage.form.placeholderTypeHere")}
                   handleChange={handleChange("description")}
-                  value={values?.description}
+                  value={values?.description as string}
                   errorMessage={errors.description}
                 />
                 <Input
@@ -112,11 +117,11 @@ function EditRecipePage() {
                   value={values?.ingredients as string}
                   errorMessage={errors.ingredients}
                 />
-                {values.category?.name && (
+                {values.name && (
                   <DropDown
                     options={CATEGORIES_DATA}
                     label={t("newRecipePage.form.calories")}
-                    value={values.category?.name}
+                    value={values.name}
                     handleChange={(categoryValue) =>
                       setFieldValue("category", categoryValue)
                     }

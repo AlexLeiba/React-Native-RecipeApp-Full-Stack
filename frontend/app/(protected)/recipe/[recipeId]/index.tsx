@@ -8,10 +8,10 @@ import { RecipeDetailsPageSkeleton } from "@/components/skeletons/RecipeDetailsP
 import { ThemedView } from "@/components/themed-view";
 import { H1, H2, Paragraph } from "@/components/typography/typography";
 import { Button } from "@/components/ui/button";
-import { RECIPES } from "@/constants/MockData";
 import { globalStyles } from "@/constants/stylesheets";
 import { Colors } from "@/constants/theme";
 import { RecipesType } from "@/constants/types";
+import { RootState } from "@/store/config";
 import { useLocalSearchParams } from "expo-router";
 import { Clock, Flame, FlameKindling, User2 } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
@@ -24,17 +24,18 @@ import {
   useColorScheme,
   View,
 } from "react-native";
+import { useSelector } from "react-redux";
 
 function RecipeDetailsPage() {
   const { t } = useTranslation();
   const theme = useColorScheme() ?? "light";
   const { recipeId } = useLocalSearchParams();
-  // const recipeData = useSelector((state: RootState) => state.recipes);
+  const recipes = useSelector((state: RootState) => state.recipes);
 
   const [selectedRecipeData, setSelectedRecipeData] = useState<RecipesType>();
 
   useEffect(() => {
-    const selectedRecipe = RECIPES.find((rec) => rec._id === recipeId);
+    const selectedRecipe = recipes.items.find((rec) => rec._id === recipeId);
     setSelectedRecipeData(selectedRecipe);
   }, [recipeId]);
 

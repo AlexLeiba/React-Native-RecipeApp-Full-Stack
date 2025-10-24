@@ -116,6 +116,7 @@
     "save": "Save"
   },
   "editProfilePage": {
+    "email": "Registered email",
     "title": "Edit Profile",
     "save": "Save",
     "name": "Name",
@@ -123,14 +124,41 @@
     "repeatPassword": "Repeat Password"
   },
   "myProfilePage": {
+    "dashboard": "Dashboard",
     "title": "My Profile",
     "logout": "Logout",
     "editProfile": "Edit Profile",
     "settings": "Settings",
     "newRecipe": "New recipe",
-    "categorySettings": "Category settings"
+    "categorySettings": "Categories",
+    "admin": "Admin"
   },
   "searchForRecipe": {
     "title": "Search for recipe"
+  },
+  "categoriesPage": {
+    "title": "Categories"
+  },
+  "newCategoryPage": {
+    "title": "New category",
+    "editTitle": "Edit category",
+    "save": "Save",
+    "delete": "Delete",
+    "form": {
+      "name": "Category name",
+      "placeholderCategoryName": "type here category name...",
+      "validation": {
+        "required": "Required",
+        "tooShort": "Too Short",
+        "tooLong": "Too Long"
+      }
+    }
+  },
+
+  "detailsCategoryPage": {
+    "min": "min",
+    "people": "people",
+    "ingredients": "Ingredients",
+    "recipeNotFound": "Recipe not found"
   }
 }

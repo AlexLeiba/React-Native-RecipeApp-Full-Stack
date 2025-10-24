@@ -33,6 +33,7 @@ export type RecipesType = {
   image: string;
   userId: string;
   categoryId: string;
+  categoryName: string;
   description?: string;
   link?: {
     linkUrl?: string;

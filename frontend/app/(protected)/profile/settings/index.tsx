@@ -41,12 +41,7 @@ function SettingsPage() {
   }, [currentLang]);
   return (
     <>
-      <Header
-        withArrowBack
-        backPath="/profile"
-        scrollOffset={0}
-        title={t("settingsPage.title")}
-      />
+      <Header withArrowBack scrollOffset={0} title={t("settingsPage.title")} />
       <ThemedView style={{ paddingTop: 100, gap: 20, height: "100%" }}>
         <View style={styles.container}>
           <View style={{ gap: 30 }}>

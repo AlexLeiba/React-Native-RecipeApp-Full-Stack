@@ -109,6 +109,17 @@ function useChangePasswordSchema() {
   });
 }
 
+function useNewCategorySchema() {
+  const { t } = useTranslation();
+
+  return Yup.object().shape({
+    name: Yup.string()
+      .required(t("newCategoryPage.form.validation.required"))
+      .min(2, t("newCategoryPage.form.validation.tooShort"))
+      .max(50, t("newCategoryPage.form.validation.tooLong")),
+  });
+}
+
 export function useSchemas() {
   const loginSchema = useLoginSchema();
   const registerSchema = useRegisterSchema();
@@ -116,6 +127,7 @@ export function useSchemas() {
   const checkOtpSchema = useCheckOtpSchema();
   const changePasswordSchema = useChangePasswordSchema();
   const newRecipeSchema = useNewRecipeSchema();
+  const newCategorySchema = useNewCategorySchema();
 
   return {
     loginSchema,
@@ -124,5 +136,6 @@ export function useSchemas() {
     checkOtpSchema,
     changePasswordSchema,
     newRecipeSchema,
+    newCategorySchema,
   };
 }

@@ -17,8 +17,22 @@ function ProfilePage() {
     router.push("/profile/edit-profile");
   }
 
-  function handleSettings() {
-    router.push("/profile/settings");
+  function handleNewRecipe() {
+    router.push("/recipe/new-recipe");
+  }
+
+  function categoriesSettings() {
+    // @ts-ignore
+    router.push("/categories");
+  }
+
+  function handleAdmin() {
+    // @ts-ignore
+    router.push("/admin");
+  }
+
+  function handleGoToDashboard() {
+    router.push("/dashboard");
   }
 
   function handleLogout() {
@@ -31,24 +45,29 @@ function ProfilePage() {
       <ThemedView style={[{ paddingTop: 100 }, styles.container]}>
         <View style={{ flexDirection: "column", gap: 20 }}>
           <Button
+            title={t("myProfilePage.dashboard")}
             type="secondary"
-            title={t("myProfilePage.editProfile")}
-            handlePress={handleEditProfile}
+            handlePress={handleGoToDashboard}
           />
           <Button
             title={t("myProfilePage.settings")}
             type="secondary"
-            handlePress={handleSettings}
+            handlePress={handleEditProfile}
           />
           <Button
             title={t("myProfilePage.newRecipe")}
             type="secondary"
-            handlePress={handleSettings}
+            handlePress={handleNewRecipe}
           />
           <Button
             title={t("myProfilePage.categorySettings")}
             type="secondary"
-            handlePress={handleSettings}
+            handlePress={categoriesSettings}
+          />
+          <Button
+            title={t("myProfilePage.admin")}
+            type="tertiary"
+            handlePress={handleAdmin}
           />
         </View>
 

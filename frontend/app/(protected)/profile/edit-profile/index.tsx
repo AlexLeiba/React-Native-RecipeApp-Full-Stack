@@ -42,7 +42,7 @@ function EditProfile() {
         scrollOffset={0}
         title={t("editProfilePage.title")}
       />
-      <ScrollView style={{ paddingTop: 100 }}>
+      <ScrollView style={{ paddingTop: 60 }}>
         <UploadImage
           handleSelectImage={handleChangeAvatar}
           selectedImage={selectedImage}

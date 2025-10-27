@@ -13,9 +13,14 @@ import {
 
 type AvatarProps = {
   selectedImage: string;
+  readOnly?: boolean;
   handleSelectImage: (image: string) => void;
 };
-export function UploadImage({ selectedImage, handleSelectImage }: AvatarProps) {
+export function UploadImage({
+  selectedImage,
+  readOnly,
+  handleSelectImage,
+}: AvatarProps) {
   // const [selectedImage, setSelectedImage] = React.useState("");
   const theme = useColorScheme() ?? "light";
   const avatarUrl =
@@ -55,12 +60,19 @@ export function UploadImage({ selectedImage, handleSelectImage }: AvatarProps) {
             source={{ uri: selectedImage || avatarUrl }}
           />
         </View>
-        <TouchableOpacity
-          onPress={pickImage}
-          style={{ position: "absolute", right: -10, bottom: -10, padding: 10 }}
-        >
-          <Edit color={Colors.dark.text} />
-        </TouchableOpacity>
+        {!readOnly && (
+          <TouchableOpacity
+            onPress={pickImage}
+            style={{
+              position: "absolute",
+              right: -10,
+              bottom: -10,
+              padding: 10,
+            }}
+          >
+            <Edit color={Colors.dark.text} />
+          </TouchableOpacity>
+        )}
       </View>
     </ThemedView>
   );

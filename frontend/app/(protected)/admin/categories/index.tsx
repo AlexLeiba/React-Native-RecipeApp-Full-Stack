@@ -1,5 +1,6 @@
 import { Card } from "@/components/Cards/Card";
 import Header from "@/components/Header/Header";
+
 import { RecipeCardSkeleton } from "@/components/skeletons/RecipeCardSkeleton";
 import { ThemedView } from "@/components/themed-view";
 import { Button } from "@/components/ui/button";
@@ -32,7 +33,7 @@ function CategoriesPage() {
 
   const [category, setCategory] = React.useState<CategoryType>({
     name: "Beef",
-    image: require("../../../assets/food-categories/beef.png"),
+    image: require("../../../../assets/food-categories/beef.png"),
     _id: "3",
     userId: "1111",
   });
@@ -63,6 +64,7 @@ function CategoriesPage() {
   return (
     <>
       <Header
+        withArrowBack
         withSearch
         scrollOffset={scrollY}
         title={t("categoriesPage.title")}
@@ -120,7 +122,9 @@ function CategoriesPage() {
                 return (
                   <Card
                     data={item}
-                    handleSelect={() => router.push(`/categories/${item._id}`)}
+                    handleSelect={() =>
+                      router.push(`/admin/categories/${item._id}`)
+                    }
                   />
                 );
               }}

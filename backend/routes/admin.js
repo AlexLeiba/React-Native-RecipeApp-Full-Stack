@@ -25,7 +25,7 @@ router.get(
 
 router.put(
   "/users/:id",
-  verifyRolesPermissions([ROLES.admin, ROLES.editor]),
+  verifyRolesPermissions([ROLES.admin]),
   editUserController
 );
 

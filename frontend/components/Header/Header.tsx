@@ -17,12 +17,14 @@ type HeaderProps = {
   withArrowBack?: boolean;
   title: string;
   withSearch?: boolean;
+  type?: "users" | "recipes" | "categories";
 };
 function Header({
   scrollOffset,
   withArrowBack = false,
   title,
   withSearch = false,
+  type = "recipes",
 }: HeaderProps) {
   const router = useRouter();
   const theme = useColorScheme();
@@ -66,22 +68,26 @@ function Header({
             justifyContent: "space-between",
           }}
         >
-          {withArrowBack ? (
-            <TouchableHighlight onPress={handleBack} style={{ padding: 15 }}>
-              <ArrowLeft color={"white"} />
-            </TouchableHighlight>
-          ) : withSearch ? (
-            <>
-              <TouchableHighlight
-                onPress={handleSearch}
-                style={{ padding: 15 }}
-              >
-                <Search color={"white"} />
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            {withArrowBack && (
+              <TouchableHighlight onPress={handleBack} style={{ padding: 15 }}>
+                <ArrowLeft color={"white"} />
               </TouchableHighlight>
-            </>
-          ) : (
-            <View />
-          )}
+            )}
+
+            {withSearch ? (
+              <>
+                <TouchableHighlight
+                  onPress={handleSearch}
+                  style={{ padding: 15 }}
+                >
+                  <Search color={"white"} />
+                </TouchableHighlight>
+              </>
+            ) : (
+              <View />
+            )}
+          </View>
           <H2>{title}</H2>
 
           <UserProfile avatar={"https://reactnative.dev/img/tiny_logo.png"} />

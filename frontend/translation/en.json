@@ -160,5 +160,19 @@
     "people": "people",
     "ingredients": "Ingredients",
     "recipeNotFound": "Recipe not found"
+  },
+  "adminPages": {
+    "title": "Admin",
+    "users": "Users",
+    "recipes": "Recipes",
+    "categories": "Categories",
+    "editUser": "Edit User",
+    "username": "Username",
+    "save": "Save",
+    "delete": "Delete",
+    "roles": "Roles",
+    "admin": "Admin",
+    "user": "User",
+    "editor": "Editor"
   }
 }

@@ -1,16 +1,14 @@
-import { useRouter } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity } from "react-native";
 import { ThemedView } from "../themed-view";
 import { H3 } from "../typography/typography";
 import { CategoryType } from "@/constants/types";
 
-export function CategoryLargeCard({ data }: { data: CategoryType }) {
-  const router = useRouter();
-
-  function handleSelectCard(categoryId: string) {
-    router.push(`/categories/${categoryId}`);
-  }
+type Props = {
+  data: CategoryType;
+  handleSelect: (id: string) => void;
+};
+export function Card({ data, handleSelect }: Props) {
   return (
     <ThemedView
       style={[
@@ -24,7 +22,7 @@ export function CategoryLargeCard({ data }: { data: CategoryType }) {
     >
       <TouchableOpacity
         style={{ flex: 1 }}
-        onPress={() => handleSelectCard(data._id)}
+        onPress={() => handleSelect(data._id)}
       >
         <ThemedView
           style={[styles.recipeCard, { height: "100%", width: "100%" }]}

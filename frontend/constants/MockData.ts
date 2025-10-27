@@ -2,6 +2,8 @@ import { CategoryType, FavoritesType, RecipesType } from "./types";
 
 export const LANGUAGE_KEY = "recipe-language";
 
+export const ROLES = ["user", "editor", "admin"];
+
 export const LANGUAGES = [
   { name: "English", id: 1 },
   { name: "Romanian", id: 2 },

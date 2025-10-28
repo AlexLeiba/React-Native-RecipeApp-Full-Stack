@@ -36,8 +36,9 @@ function SignInPage() {
             avatar: "",
             roles: { user: "user" },
           });
+          router.push("/dashboard");
         }}
-        title={"press secure"}
+        title={"Dshboard"}
       />
 
       <Button
@@ -45,7 +46,7 @@ function SignInPage() {
         handlePress={() => {
           handleSignOut();
         }}
-        title={"press secure"}
+        title={"OUT"}
       />
 
       <Formik

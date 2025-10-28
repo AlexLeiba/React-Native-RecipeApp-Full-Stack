@@ -2,9 +2,10 @@ import { ThemedView } from "@/components/themed-view";
 import { Paragraph } from "@/components/typography/typography";
 import { globalStyles } from "@/constants/stylesheets";
 import { CategoryType } from "@/constants/types";
+import { useAppDispatch } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/config";
+import { filterRecipes } from "@/store/slices/recipes";
 import { useRouter } from "expo-router";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Image,
@@ -19,25 +20,21 @@ type Props = {
 };
 function CategoryCard({ item }: Props) {
   const { t } = useTranslation();
-
-  const theme = useColorScheme() ?? "light";
-  const categoriesData = useSelector((state: RootState) => state.categories);
-
-  const dispatch = useDispatch();
-
-  const [category, setCategory] = useState<CategoryType>({
-    name: "Beef",
-    image: require("../../assets/food-categories/beef.png"),
-    _id: "3",
-    userId: "3",
-  });
   const router = useRouter();
-  function handleSelectCategory(
-    category: CategoryType["name"],
-    categoryId: string
-  ) {}
+  const theme = useColorScheme() ?? "light";
+
+  // Redux
+  const dispatch = useAppDispatch();
+  const selectedCategory = useSelector(
+    (state: RootState) => state.categories.selectedCategory
+  );
+
+  function handleSelectCategory(categoryId: string) {
+    // Filter by category
+    dispatch(filterRecipes({ type: "categoryId", id: categoryId }));
+  }
   return (
-    <TouchableOpacity onPress={() => handleSelectCategory(item.name, item._id)}>
+    <TouchableOpacity onPress={() => handleSelectCategory(item._id)}>
       <ThemedView style={[globalStyles.alignCenter, {}]}>
         <ThemedView
           style={[
@@ -50,7 +47,7 @@ function CategoryCard({ item }: Props) {
               borderWidth: 5,
             },
 
-            category?._id === item._id && {
+            selectedCategory?._id === item._id && {
               borderColor: "#ffb514e9",
               borderWidth: 5,
             },

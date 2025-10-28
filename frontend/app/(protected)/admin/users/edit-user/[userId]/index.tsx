@@ -7,7 +7,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RootState } from "@/store/config";
-import { deleteRecipe } from "@/store/slices/recipesReducer";
+import { deleteRecipe } from "@/store/slices/recipes";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";

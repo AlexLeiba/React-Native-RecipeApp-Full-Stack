@@ -11,15 +11,15 @@ import {
   REHYDRATE,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
-import categoriesReducer from "./slices/categoriesReducer";
-import favoritesReducer from "./slices/favoritesReducer";
-import recipesReducer from "./slices/recipesReducer";
-import activitiesReducer from "./slices/activitiesReducer";
+import categoriesReducer from "./slices/categories";
+import recipesReducer from "./slices/recipes";
+import activitiesReducer from "./slices/activities";
+import usersReducer from "./slices/users";
 
 const rootReducer = combineReducers({
   recipes: recipesReducer,
   categories: categoriesReducer,
-  favorites: favoritesReducer,
+  users: usersReducer,
   activities: activitiesReducer,
 });
 

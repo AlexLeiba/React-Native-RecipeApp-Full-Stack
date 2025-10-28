@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import SwitchComponent from "@/components/ui/switch";
 import { CATEGORIES_DATA } from "@/constants/MockData";
 import { RootState } from "@/store/config";
-import { deleteRecipe, editRecipe } from "@/store/slices/recipesReducer";
+import { deleteRecipe, editRecipe } from "@/store/slices/recipes";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";

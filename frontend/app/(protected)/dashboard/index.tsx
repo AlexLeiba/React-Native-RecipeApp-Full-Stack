@@ -29,8 +29,12 @@ function HomePage() {
   const router = useRouter();
 
   const theme = useColorScheme() ?? "light";
-  const categoriesData = useSelector((state: RootState) => state.categories);
-  const recipesData = useSelector((state: RootState) => state.recipes);
+  const categoriesData = useSelector(
+    (state: RootState) => state.categories.data
+  );
+  const recipesData = useSelector((state: RootState) => state.recipes.data);
+  console.log("🚀 ~ HomePage ~ recipesData:", recipesData);
+  console.log("🚀 ~ HomePage ~ categoriesData:", categoriesData);
   const dispatch = useDispatch();
 
   const [category, setCategory] = React.useState<CategoryType>({
@@ -136,7 +140,7 @@ function HomePage() {
               columnWrapperStyle={{ marginTop: 30 }}
               numColumns={2}
               contentContainerStyle={{ gap: 5 }}
-              data={recipesData.items}
+              data={recipesData}
               renderItem={({ item }) => {
                 return <RecipeCard data={item} />;
               }}

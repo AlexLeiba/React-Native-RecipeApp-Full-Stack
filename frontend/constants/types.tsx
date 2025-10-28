@@ -1,9 +1,6 @@
 export type NetworkActivitiesType = {
-  status: string;
+  status: "pending" | "fulfilled" | "rejected" | "idle";
   errorMessage?: string;
-  error: boolean;
-  success: boolean;
-  loading: boolean;
 };
 
 export type UserType = {
@@ -18,6 +15,9 @@ export type UserType = {
     editor?: string;
     admin?: string;
   };
+  notifications?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type SettingsType = {
@@ -31,6 +31,7 @@ export type RecipesType = {
   _id: string;
   name: string;
   image: string;
+  imageId: string;
   userId: string;
   categoryId: string;
   categoryName: string;

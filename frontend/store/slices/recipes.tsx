@@ -1,5 +1,9 @@
 import { RECIPES } from "@/constants/MockData";
-import { NetworkActivitiesType, RecipesType } from "@/constants/types";
+import {
+  NetworkActivitiesType,
+  RecipesType,
+  RequestPrefixType,
+} from "@/constants/types";
 import { axiosInstance } from "@/lib/axiosConfig";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
@@ -19,12 +23,12 @@ export const recipeInitialState: {
 // 1️⃣ Define async thunk
 export const fetchRecipes = createAsyncThunk(
   "recipes/fetchRecipes",
-  async (params, thunkAPI) => {
+  async ({ type }: RequestPrefixType, thunkAPI) => {
     // Fetches all recipes and adds into the store
-    console.log("params", params);
+
     try {
-      const data = await axiosInstance.get("/todos");
-      console.log("🚀 ~ data:", data);
+      const response = await axiosInstance.get(`${type}/recipes`);
+      console.log("🚀 ~ response:", response);
 
       return RECIPES; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
@@ -32,14 +36,19 @@ export const fetchRecipes = createAsyncThunk(
     }
   }
 );
+
+type GetRecipeParamsType = {
+  recipeId: number;
+  type: RequestPrefixType;
+};
 export const getRecipe = createAsyncThunk(
   "recipes/getRecipe",
-  async (recipeId: number, thunkAPI) => {
+  async ({ recipeId, type }: GetRecipeParamsType, thunkAPI) => {
     // Fetches all recipes and adds into the store
     console.log("recipeId", recipeId);
     try {
-      const data = await axiosInstance.get("/todos");
-      console.log("🚀 ~ data:", data);
+      const response = await axiosInstance.get(`${type}/recipes/${recipeId}`);
+      console.log("🚀 ~ response:", response);
 
       return RECIPES[0]; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
@@ -47,18 +56,23 @@ export const getRecipe = createAsyncThunk(
     }
   }
 );
+
+type FilterRecipesParamsType = {
+  query: "categoryId" | "personal" | "favorites";
+  id: string;
+  type: RequestPrefixType;
+};
 export const filterRecipes = createAsyncThunk(
   "recipes/filterRecipes",
-  async (
-    { type, id }: { type: "categoryId" | "own" | "favorites"; id: string },
-    thunkAPI
-  ) => {
+  async ({ query, id, type }: FilterRecipesParamsType, thunkAPI) => {
     console.log("params id", id, type);
     // TODO filter based on category ID or own categories
     //Return filtered recipes
     try {
-      const data = await axiosInstance.get("/todos");
-      console.log("🚀 ~ data:", data);
+      const response = await axiosInstance.get(
+        `${type}/recipes?${query}=${query}`
+      );
+      console.log("🚀 ~ data:", response);
 
       return RECIPES; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
@@ -67,40 +81,66 @@ export const filterRecipes = createAsyncThunk(
   }
 );
 
+type CreateRecipesParamsType = {
+  recipeData: RecipesType;
+  type: RequestPrefixType;
+};
 export const createNewRecipe = createAsyncThunk(
   "recipes/createNewRecipe",
-  async (recipeData: RecipesType, thunkAPI) => {
-    console.log("🚀 ~ recipeData:", recipeData);
+  async ({ recipeData, type }: CreateRecipesParamsType, thunkAPI) => {
     // Pass new recipe data to backend
     try {
-      const data = await axiosInstance.get("/todos");
+      const data = await axiosInstance.post(`${type}/recipes`, recipeData);
+      const recipesData = await axiosInstance.get(`${type}/recipes`); //return new data
+      console.log("🚀 ~ recipesData:", recipesData);
       console.log("🚀 ~ data:", data);
+
+      return recipesData.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
+
+type EditRecipesParamsType = {
+  recipeData: RecipesType;
+  type: RequestPrefixType;
+  recipeId: string;
+};
 export const editRecipe = createAsyncThunk(
   "recipes/editRecipe",
-  async (recipeData: RecipesType, thunkAPI) => {
-    console.log("🚀 ~ recipeData to edit:", recipeData);
+  async ({ recipeData, type, recipeId }: EditRecipesParamsType, thunkAPI) => {
     // TODO pass to backend Recipe edit data
     try {
-      const data = await axiosInstance.get("/todos");
-      console.log("🚀 ~ data:", data);
+      const data = await axiosInstance.put(
+        `${type}/recipes/${recipeId}`,
+        recipeData
+      );
+      const recipesData = await axiosInstance.get(`${type}/recipes`);
+      console.log("🚀 ~ data:", data, recipesData);
+
+      return recipesData.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
+
+type DeteleRecipesParamsType = {
+  recipeId: string;
+  type: RequestPrefixType;
+};
 export const deleteRecipe = createAsyncThunk(
   "recipes/deleteRecipe",
-  async (recipeId: string, thunkAPI) => {
-    console.log("🚀 ~ recipeId:", recipeId);
-    // TODO pass to backend which to delete
+  async ({ recipeId, type }: DeteleRecipesParamsType, thunkAPI) => {
     try {
-      const data = await axiosInstance.get("/todos");
+      const data = await axiosInstance.delete(`${type}/recipes/${recipeId}`);
       console.log("🚀 ~ data:", data);
+
+      const recipesData = await axiosInstance.get(`${type}/recipes`);
+      console.log("🚀 ~ recipesData:", recipesData);
+
+      return recipesData.data; //return new data and update store
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -110,14 +150,7 @@ export const deleteRecipe = createAsyncThunk(
 const newRecipeSlice = createSlice({
   name: "recipes",
   initialState: recipeInitialState,
-  reducers: {
-    // newRecipe: (state, action) => {},
-    // editRecipe: (state, action) => {},
-    // deleteRecipe: (state, action) => {},
-    // addToFavorites: (state, action) => {},
-    // filterByCategoryType: (state, action) => {},
-    // filterOwnCategories: (state, action) => {},
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       // Fetch
@@ -138,14 +171,17 @@ const newRecipeSlice = createSlice({
       // Create
       .addCase(createNewRecipe.fulfilled, (state, action) => {
         state.activities.status = "fulfilled";
+        state.data = action.payload; //update store data with new recipe
       })
       // Edit
       .addCase(editRecipe.fulfilled, (state, action) => {
         state.activities.status = "fulfilled";
+        state.data = action.payload; //update store data with new recipe
       })
       // Delete
       .addCase(deleteRecipe.fulfilled, (state, action) => {
         state.activities.status = "fulfilled";
+        state.data = action.payload;
       })
 
       // Will handle all pending, and rejected cases
@@ -163,55 +199,8 @@ const newRecipeSlice = createSlice({
           state.activities.errorMessage = action.type as string;
         }
       );
-
-    // Fetch all recipes
-    // .addCase(fetchRecipes.pending, (state) => {
-    //   state.activities.status = "pending";
-    //   state.activities.errorMessage = "";
-    // })
-    // .addCase(fetchRecipes.fulfilled, (state, action) => {
-    //   state.activities.status = "fulfilled";
-    //   state.data = action.payload;
-    // })
-    // .addCase(fetchRecipes.rejected, (state, action) => {
-    //   state.activities.status = "rejected";
-    //   state.activities.errorMessage = action.payload as string;
-    // })
-    // // Create Recipe
-    // .addCase(createNewRecipe.pending, (state) => {
-    //   state.activities.status = "pending";
-    //   state.activities.errorMessage = "";
-    // })
-    // .addCase(createNewRecipe.fulfilled, (state, action) => {
-    //   state.activities.status = "fulfilled";
-    // })
-    // .addCase(createNewRecipe.rejected, (state, action) => {
-    //   state.activities.status = "rejected";
-    //   state.activities.errorMessage = action.payload as string;
-    // })
-    // //Filter Recipes
-    // .addCase(filterRecipes.pending, (state) => {
-    //   state.activities.status = "pending";
-    //   state.activities.errorMessage = "";
-    // })
-    // .addCase(filterRecipes.fulfilled, (state, action) => {
-    //   state.activities.status = "fulfilled";
-    // })
-    // .addCase(filterRecipes.rejected, (state, action) => {
-    //   state.activities.status = "rejected";
-    //   state.activities.errorMessage = action.payload as string;
-    // });
-
-    // Filter Recipes
   },
 });
 
 export default newRecipeSlice.reducer;
-export const {
-  // newRecipe,
-  // editRecipe,
-  // deleteRecipe,
-  // addToFavorites,
-  // filterByCategoryType,
-  // filterOwnCategories,
-} = newRecipeSlice.actions;
+export const {} = newRecipeSlice.actions;

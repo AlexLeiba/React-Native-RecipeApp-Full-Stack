@@ -2,36 +2,34 @@ import { ThemedView } from "@/components/themed-view";
 import { Paragraph } from "@/components/typography/typography";
 import { globalStyles } from "@/constants/stylesheets";
 import { CategoryType } from "@/constants/types";
-import { useAppDispatch } from "@/hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/config";
+import { selectCategory } from "@/store/slices/categories";
 import { filterRecipes } from "@/store/slices/recipes";
-import { useRouter } from "expo-router";
-import { useTranslation } from "react-i18next";
+
 import {
   Image,
   StyleSheet,
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 
 type Props = {
   item: CategoryType;
 };
 function CategoryCard({ item }: Props) {
-  const { t } = useTranslation();
-  const router = useRouter();
   const theme = useColorScheme() ?? "light";
 
   // Redux
   const dispatch = useAppDispatch();
-  const selectedCategory = useSelector(
+  const selectedCategory = useAppSelector(
     (state: RootState) => state.categories.selectedCategory
   );
 
   function handleSelectCategory(categoryId: string) {
     // Filter by category
     dispatch(filterRecipes({ type: "categoryId", id: categoryId }));
+    dispatch(selectCategory({ selectedCategory: item }));
   }
   return (
     <TouchableOpacity onPress={() => handleSelectCategory(item._id)}>

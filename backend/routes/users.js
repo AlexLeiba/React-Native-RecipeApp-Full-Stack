@@ -23,7 +23,7 @@ router.get(
   getUserController
 );
 
-router.post(
+router.put(
   "/users/:id",
   verifyRolesPermissions([ROLES.user, ROLES.admin, ROLES.editor]),
   editUserController

@@ -1,5 +1,9 @@
 import { USERS } from "@/constants/MockData";
-import { NetworkActivitiesType, UserType } from "@/constants/types";
+import {
+  NetworkActivitiesType,
+  RequestPrefixType,
+  UserType,
+} from "@/constants/types";
 import { axiosInstance } from "@/lib/axiosConfig";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
@@ -18,54 +22,80 @@ const initialState: {
 
 export const fetchUsers = createAsyncThunk(
   "users/fetchUsers",
-  async (_, thunkAPI) => {
+  async ({ type }: RequestPrefixType, thunkAPI) => {
     try {
-      const data = await axiosInstance.get("/todos");
-      console.log("🚀 ~ Fetch users:", data);
+      const response = await axiosInstance.get(`${type}/users`);
+      console.log("🚀 ~ Fetch users:", response);
 
-      return USERS; // This becomes `action.payload` in fulfilled reducer
+      return response.data; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
+
+type GetUserParamsType = {
+  userId: number;
+  type: RequestPrefixType;
+};
 
 export const getUser = createAsyncThunk(
   "users/getUser",
-  async (userId: number, thunkAPI) => {
+  async ({ userId, type }: GetUserParamsType, thunkAPI) => {
     console.log("🚀 ~UserId:", userId);
     try {
-      const data = await axiosInstance.get("/todos");
-      console.log("🚀 ~ data:", data);
+      const response = await axiosInstance.get(`${type}/users/${userId}`);
+      console.log("🚀 ~ response:", response);
 
-      return USERS[0]; // This becomes `action.payload` in fulfilled reducer
+      return response.data; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
+
+type EditUserParamsType = {
+  userData: UserType;
+  type: RequestPrefixType;
+  userId: number;
+};
 
 export const editUser = createAsyncThunk(
   "users/editUser",
-  async (userData: UserType, thunkAPI) => {
-    console.log("🚀 ~UserData:", userData);
-
+  async ({ userData, type, userId }: EditUserParamsType, thunkAPI) => {
     try {
-      const data = await axiosInstance.get("/todos");
-      console.log("🚀 ~ data:", data);
+      const response = await axiosInstance.put(
+        `${type}/users/${userId}`,
+        userData
+      );
+      console.log("🚀 ~ data:", response);
+      const usersData = await axiosInstance.get(`${type}/users`);
+      console.log("🚀 ~ data:", usersData);
+
+      return usersData.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
 
+type DeleteUserParamsType = {
+  type: RequestPrefixType;
+  userId: string;
+};
+
 export const deleteUser = createAsyncThunk(
   "users/deleteUser",
-  async (userId: number, thunkAPI) => {
+  async ({ userId, type }: DeleteUserParamsType, thunkAPI) => {
     console.log("🚀 ~UserId:", userId);
     try {
-      const data = await axiosInstance.get("/todos");
-      console.log("🚀 ~ data:", data);
+      const response = await axiosInstance.delete(`${type}/users/${userId}`);
+      console.log("🚀 ~ response:", response);
+
+      const usersData = await axiosInstance.get(`${type}/users`);
+      console.log("🚀 ~ data:", usersData);
+
+      return usersData.data; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -97,18 +127,22 @@ const usersSlice = createSlice({
       })
 
       // Edit
-      .addCase(editUser.fulfilled, (state) => {
+      .addCase(editUser.fulfilled, (state, action) => {
         state.activities.status = "fulfilled";
+        state.data = action.payload;
       })
       // Delete
-      .addCase(deleteUser.fulfilled, (state) => {
+      .addCase(deleteUser.fulfilled, (state, action) => {
         state.activities.status = "fulfilled";
+        state.data = action.payload;
       })
 
       // Will handle all pending, and rejected cases
       .addMatcher(
         (action) => action.type.endsWith("/pending"),
-        (state) => {}
+        (state) => {
+          state.activities.status = "pending";
+        }
       )
       .addMatcher(
         (action) => action.type.endsWith("/rejected"),

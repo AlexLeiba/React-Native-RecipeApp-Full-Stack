@@ -1,8 +1,8 @@
-import { CATEGORIES_DATA, RECIPES, USERS } from "@/constants/MockData";
 import {
   CategoryType,
   NetworkActivitiesType,
   RecipesType,
+  RequestPrefixType,
   UserType,
 } from "@/constants/types";
 import { axiosInstance } from "@/lib/axiosConfig";
@@ -25,14 +25,20 @@ const initialState: {
   categories: [],
 };
 
+type SearchType = {
+  type: RequestPrefixType;
+  search: string;
+};
 export const searchUsers = createAsyncThunk(
   "search/searchUsers",
-  async (search: string, thunkAPI) => {
+  async ({ type, search }: SearchType, thunkAPI) => {
     try {
-      const data = await axiosInstance.get("/todos");
-      console.log("🚀 ~ Fetch users:", data);
+      const response = await axiosInstance.get(
+        `${type}/users/search/${search}`
+      );
+      console.log("🚀 ~ Fetch users:", response);
 
-      return USERS; // This becomes `action.payload` in fulfilled reducer
+      return response.data; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -41,13 +47,15 @@ export const searchUsers = createAsyncThunk(
 
 export const searchCategories = createAsyncThunk(
   "search/searchUsers",
-  async (search: string, thunkAPI) => {
+  async ({ search, type }: SearchType, thunkAPI) => {
     console.log("🚀 ~ search:", search);
     try {
-      const data = await axiosInstance.get("/todos");
-      console.log("🚀 ~ cat data:", data);
+      const response = await axiosInstance.get(
+        `${type}/categories/search/${search}`
+      );
+      console.log("🚀 ~ cat response:", response);
 
-      return CATEGORIES_DATA; // This becomes `action.payload` in fulfilled reducer
+      return response.data; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -55,13 +63,15 @@ export const searchCategories = createAsyncThunk(
 );
 export const searchRecipes = createAsyncThunk(
   "search/searchRecipes",
-  async (search: string, thunkAPI) => {
+  async ({ search, type }: SearchType, thunkAPI) => {
     console.log("🚀 ~ search:", search);
     try {
-      const data = await axiosInstance.get("/todos");
-      console.log("🚀 ~ cat data:", data);
+      const response = await axiosInstance.get(
+        `${type}/recipes/search/${search}`
+      );
+      console.log("🚀 ~ cat response:", response);
 
-      return RECIPES; // This becomes `action.payload` in fulfilled reducer
+      return response.data; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -94,7 +104,10 @@ export const searchSlice = createSlice({
       // Will handle all pending, and rejected cases
       .addMatcher(
         (action) => action.type.endsWith("/pending"),
-        (state) => {}
+        (state) => {
+          state.activities.status = "pending";
+          state.activities.errorMessage = "";
+        }
       )
       .addMatcher(
         (action) => action.type.endsWith("/rejected"),

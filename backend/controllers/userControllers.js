@@ -1,5 +1,20 @@
 const UserModel = require("../model/user");
 
+async function getSearchAllUsersController(req, res) {
+  if (!req.user) return res.status(403).json({ message: "Forbidden" });
+
+  try {
+    const usersData = await UserModel.find().select(
+      "-password -__v -refreshToken -otp -otpCreatedAt -otpVrified"
+    );
+
+    if (!usersData) return res.status(404).json({ message: "Not found" });
+
+    res.status(200).json({ data: usersData });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
 async function getAllUsersController(req, res) {
   if (!req.user) return res.status(403).json({ message: "Forbidden" });
 
@@ -82,4 +97,5 @@ module.exports = {
   getUserController,
   editUserController,
   deteleUserController,
+  getSearchAllUsersController,
 };

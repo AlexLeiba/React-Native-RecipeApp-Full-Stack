@@ -3,6 +3,21 @@ const RecipeModel = require("../model/recipe");
 const UserModel = require("../model/user");
 const ActivitiesModel = require("../model/activities");
 
+async function getSearchCategoriesController(req, res) {
+  if (!req.user) return res.status(403).json({ message: "Forbidden" });
+
+  const userEmail = req.user.email;
+  if (!userEmail) return res.status(403).json({ message: "Forbidden" });
+
+  try {
+    const foundCategories = await CategoryModel.find();
+
+    res.status(200).json({ data: foundCategories });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+  //get all categories based on user id
+}
 async function getCategoriesController(req, res) {
   if (!req.user) return res.status(403).json({ message: "Forbidden" });
 
@@ -155,4 +170,5 @@ module.exports = {
   deleteCategoryController,
   updateCategoryController,
   getCategoryController,
+  getSearchCategoriesController,
 };

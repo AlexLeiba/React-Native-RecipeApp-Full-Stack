@@ -5,6 +5,7 @@ const ROLES = require("../config/roles");
 
 //users
 const {
+  getSearchAllUsersController,
   getAllUsersController,
   getUserController,
   editUserController,
@@ -15,6 +16,11 @@ router.get(
   "/users",
   verifyRolesPermissions([ROLES.admin, ROLES.editor]),
   getAllUsersController
+);
+router.get(
+  "/users/search/:search",
+  verifyRolesPermissions([ROLES.admin, ROLES.editor]),
+  getSearchAllUsersController
 );
 
 router.get(
@@ -42,12 +48,18 @@ const {
   deleteCategoryController,
   updateCategoryController,
   getCategoryController,
+  getSearchCategoriesController,
 } = require("../controllers/adminCategoriesController");
 
 router.get(
   "/categories",
   verifyRolesPermissions([ROLES.admin, ROLES.editor]),
   getCategoriesController
+);
+router.get(
+  "/categories/search/:search",
+  verifyRolesPermissions([ROLES.admin, ROLES.editor]),
+  getSearchCategoriesController
 );
 router.get(
   "/categories/:id",
@@ -77,12 +89,18 @@ const {
   createRecipeController,
   updateRecipeController,
   deleteRecipeController,
+  getSearchRecipesController,
 } = require("../controllers/adminRecipesController");
 
 router.get(
   "/recipes",
   verifyRolesPermissions([ROLES.admin, ROLES.editor]),
   getRecipesController
+);
+router.get(
+  "/recipes/search/:search",
+  verifyRolesPermissions([ROLES.admin, ROLES.editor]),
+  getSearchRecipesController
 );
 router.get(
   "/recipes/:id",

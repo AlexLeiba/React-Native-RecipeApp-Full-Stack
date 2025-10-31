@@ -1,5 +1,9 @@
 import { CATEGORIES_DATA } from "@/constants/MockData";
-import { CategoryType, NetworkActivitiesType } from "@/constants/types";
+import {
+  CategoryType,
+  NetworkActivitiesType,
+  RequestPrefixType,
+} from "@/constants/types";
 import { axiosInstance } from "@/lib/axiosConfig";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -17,68 +21,109 @@ const initialState: CategoriesState = {
   },
 };
 
+type FetchCategoriesParamsType = {
+  type: RequestPrefixType;
+};
 export const fetchCategories = createAsyncThunk(
   "categories/fetchCategories",
-  async (_, thunkAPI) => {
+  async ({ type }: FetchCategoriesParamsType, thunkAPI) => {
     try {
-      const data = await axiosInstance.get("/todos");
-      console.log("🚀 ~ cat data:", data);
+      const response = await axiosInstance.get(`${type}/categories`);
+      console.log("🚀 ~ cat response:", response);
 
-      return CATEGORIES_DATA; // This becomes `action.payload` in fulfilled reducer
+      return response.data; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
+
+type FetchCategoryParamsType = {
+  type: RequestPrefixType;
+  categoryId: number;
+};
 export const getCategory = createAsyncThunk(
   "categories/getCategory",
-  async (categoryId: number, thunkAPI) => {
+  async ({ categoryId, type }: FetchCategoryParamsType, thunkAPI) => {
     try {
-      const data = await axiosInstance.get("/todos");
-      console.log("🚀 ~ categoryId", categoryId);
+      const response = await axiosInstance.get(
+        `${type}/categories/${categoryId}`
+      );
+      console.log("🚀 ~ categoryId", response);
 
-      return CATEGORIES_DATA[0]; // This becomes `action.payload` in fulfilled reducer
+      return response.data; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
 
+type CreateCategoryParamsType = {
+  type: RequestPrefixType;
+  categoryData: CategoryType;
+};
 export const createNewCategory = createAsyncThunk(
   "categories/createNewCategory",
-  async (categoryData: CategoryType, thunkAPI) => {
+  async ({ categoryData, type }: CreateCategoryParamsType, thunkAPI) => {
     try {
-      console.log("🚀 ~ categoryData:", categoryData);
+      const response = await axiosInstance.post(
+        `${type}/categories`,
+        categoryData
+      );
+      const categoriesData = await axiosInstance.get(`${type}/categories`);
+      console.log("🚀 ~ data:", response, categoriesData);
 
-      const data = await axiosInstance.get("/todos");
-      console.log("🚀 ~ data:", data);
+      return categoriesData.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
 
+type EditCategoryParamsType = {
+  type: RequestPrefixType;
+  categoryData: CategoryType;
+  categoryId: string;
+};
 export const editCategory = createAsyncThunk(
   "categories/editCategory",
-  async (categoryData: CategoryType, thunkAPI) => {
-    console.log("🚀 ~ categoryData:", categoryData);
-
+  async (
+    { categoryData, type, categoryId }: EditCategoryParamsType,
+    thunkAPI
+  ) => {
     try {
-      const data = await axiosInstance.get("/todos");
-      console.log("🚀 ~ data:", data);
+      const response = await axiosInstance.put(
+        `${type}/categories/${categoryId}`,
+        categoryData
+      );
+      console.log("🚀 ~ response:", response);
+
+      const categoriesData = await axiosInstance.get(`${type}/categories`);
+      console.log("🚀 ~ categoriesData:", categoriesData);
+
+      return categoriesData.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
 
+type DeleteCategoryParamsType = {
+  type: RequestPrefixType;
+  categoryId: string;
+};
 export const deleteCategory = createAsyncThunk(
   "categories/deleteCategory",
-  async (categoryId: number, thunkAPI) => {
-    console.log("🚀 ~ categoryId:", categoryId);
+  async ({ categoryId, type }: DeleteCategoryParamsType, thunkAPI) => {
     try {
-      const data = await axiosInstance.get("/todos");
-      console.log("🚀 ~ data:", data);
+      const response = await axiosInstance.delete(
+        `${type}/categories/${categoryId}`
+      );
+
+      const categoriesData = await axiosInstance.get(`${type}/categories`);
+      console.log("🚀 ~ categoriesData:", categoriesData, response);
+
+      return categoriesData.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -89,20 +134,13 @@ const categoriesSlice = createSlice({
   name: "categories",
   initialState,
   reducers: {
-    // // getCategories: (state, action: { payload: { data: CategoryType[] } }) => {},
-    // selectCategory: (
-    //   state,
-    //   action: { payload: { selectedCategory: CategoryType } }
-    // ) => {
-    //   state.selectedCategory = action.payload.selectedCategory;
-    //   // TODO implement selectCategory
-    // },
-    // editCategory: (state, action: { payload: { categoryId: number } }) => {
-    //   // TODO implement editCategory
-    // },
-    // deleteCategory: (state, action: { payload: { categoryId: number } }) => {
-    //   // TODO implement deleteCategory
-    // },
+    selectCategory: (
+      state,
+      action: { payload: { selectedCategory: CategoryType } }
+    ) => {
+      state.selectedCategory = action.payload.selectedCategory;
+      // TODO implement selectCategory
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -117,22 +155,27 @@ const categoriesSlice = createSlice({
         state.selectedCategory = action.payload;
       })
       // Create
-      .addCase(createNewCategory.fulfilled, (state) => {
+      .addCase(createNewCategory.fulfilled, (state, action) => {
         state.activities.status = "fulfilled";
+        state.data = action.payload;
       })
       // Edit
-      .addCase(editCategory.fulfilled, (state) => {
+      .addCase(editCategory.fulfilled, (state, action) => {
         state.activities.status = "fulfilled";
+        state.data = action.payload;
       })
       // Delete
-      .addCase(deleteCategory.fulfilled, (state) => {
+      .addCase(deleteCategory.fulfilled, (state, action) => {
         state.activities.status = "fulfilled";
+        state.data = action.payload;
       })
 
       // Will handle all pending, and rejected cases
       .addMatcher(
         (action) => action.type.endsWith("/pending"),
-        (state) => {}
+        (state) => {
+          state.activities.status = "pending";
+        }
       )
       .addMatcher(
         (action) => action.type.endsWith("/rejected"),
@@ -146,4 +189,4 @@ const categoriesSlice = createSlice({
 
 export default categoriesSlice.reducer;
 
-export const {} = categoriesSlice.actions;
+export const { selectCategory } = categoriesSlice.actions;

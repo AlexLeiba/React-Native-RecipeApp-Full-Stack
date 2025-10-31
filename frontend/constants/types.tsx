@@ -1,3 +1,7 @@
+export type RequestPrefixType = {
+  type: "api" | "admin";
+};
+
 export type NetworkActivitiesType = {
   status: "pending" | "fulfilled" | "rejected" | "idle";
   errorMessage?: string;

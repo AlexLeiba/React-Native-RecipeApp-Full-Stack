@@ -1,6 +1,29 @@
 const RecipeModel = require("../model/recipe");
 const UserModel = require("../model/user");
 const ActivitiesModel = require("../model/activities");
+async function getSearchRecipesController(req, res) {
+  if (!req.user) {
+    res.status(403).json({ message: "Forbidden" });
+  }
+  const userEmail = req.user.email;
+  if (!userEmail) {
+    res.status(403).json({ message: "Forbidden" });
+  }
+
+  try {
+    const foundUser = await UserModel.findOne({ email: userEmail });
+
+    if (!foundUser) {
+      res.status(400).json({ message: "User not found" });
+    }
+
+    const foundRecipes = await RecipeModel.find();
+
+    res.status(200).json({ data: foundRecipes });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
 async function getRecipesController(req, res) {
   if (!req.user) {
     res.status(403).json({ message: "Forbidden" });
@@ -167,4 +190,5 @@ module.exports = {
   createRecipeController,
   updateRecipeController,
   deleteRecipeController,
+  getSearchRecipesController,
 };

@@ -8,7 +8,9 @@ import { H1, H3 } from "@/components/typography/typography";
 import { Button } from "@/components/ui/button";
 import { globalStyles } from "@/constants/stylesheets";
 import { CategoryType } from "@/constants/types";
+import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/config";
+import { fetchCategories } from "@/store/slices/categories";
 import { useRouter } from "expo-router";
 import { Plus } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
@@ -21,7 +23,6 @@ import {
   useColorScheme,
   View,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 
 function HomePage() {
   const { t } = useTranslation();
@@ -29,32 +30,24 @@ function HomePage() {
   const router = useRouter();
 
   const theme = useColorScheme() ?? "light";
-  const categoriesData = useSelector(
-    (state: RootState) => state.categories.data
-  );
-  const recipesData = useSelector((state: RootState) => state.recipes.data);
+  const {
+    data: categoriesData,
+    activities: { status: categoriesStatus },
+  } = useAppSelector((state: RootState) => state.categories);
+  const {
+    data: recipesData,
+    activities: { status: recipesStatus },
+  } = useAppSelector((state: RootState) => state.recipes);
+
+  console.log("🚀 ~ HomePage ~ status:", recipesStatus, categoriesStatus);
+
   console.log("🚀 ~ HomePage ~ recipesData:", recipesData);
   console.log("🚀 ~ HomePage ~ categoriesData:", categoriesData);
-  const dispatch = useDispatch();
-
-  const [category, setCategory] = React.useState<CategoryType>({
-    name: "Beef",
-    image: require("../../../assets/food-categories/beef.png"),
-    _id: "3",
-    userId: "1111",
-  });
-
-  const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
+    dispatch(fetchCategories());
     //fetch data
-    setLoading(true);
-
-    const timeoutId = setTimeout(() => {
-      setLoading(false);
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
   }, []);
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -65,6 +58,10 @@ function HomePage() {
 
   function handleAddNewRecipe() {
     router.push("/recipe/new-recipe");
+  }
+
+  function handleSelectCategory(categoryId: string) {
+    console.log("cat", categoryId);
   }
 
   return (
@@ -85,7 +82,7 @@ function HomePage() {
 
         {/* CATEGORIES SECTION */}
         <ThemedView style={globalStyles.spacer10}>
-          {loading ? (
+          {categoriesStatus === "pending" ? (
             <CategoryCardSkeleton />
           ) : (
             <FlatList
@@ -102,7 +99,7 @@ function HomePage() {
 
         {/*RECIPES SECTION */}
         <ThemedView style={[globalStyles.spacer40]}>
-          {loading ? (
+          {recipesStatus === "pending" ? (
             <RecipeCardSkeleton />
           ) : (
             <FlatList
@@ -115,7 +112,7 @@ function HomePage() {
                     alignItems: "center",
                   }}
                 >
-                  <H3 style={{ color: "#fff236cf" }}>{category?.name}</H3>
+                  <H3 style={{ color: "#fff236cf" }}>{"ya"}</H3>
                   <Button
                     handlePress={handleAddNewRecipe}
                     type="secondary"

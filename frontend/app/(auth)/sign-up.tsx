@@ -8,11 +8,39 @@ import { StyleSheet, View } from "react-native";
 import { Formik } from "formik";
 import { useSchemas } from "@/constants/schemas";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/context/AuthContext";
+import { apiFactory } from "@/api/apiFactory";
+import { Toast } from "toastify-react-native";
 
 function SignInPage() {
+  const [loading, setLoading] = React.useState(false);
   const router = useRouter();
   const { registerSchema } = useSchemas();
   const { t } = useTranslation();
+  const { user } = useAuth();
+
+  if (user?.accessToken) {
+    router.push("/dashboard");
+  }
+
+  async function handleRegister(values: {
+    username: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+  }) {
+    setLoading(true);
+    try {
+      const response = await apiFactory.register(values);
+
+      Toast.success(response.message);
+      router.push("/");
+    } catch (error: any) {
+      Toast.error(error?.response?.data?.message || error?.message);
+    } finally {
+      setLoading(false);
+    }
+  }
   return (
     <ThemedView style={styles.container}>
       <H1>{t("signUpPage.title")}</H1>
@@ -26,7 +54,7 @@ function SignInPage() {
           confirmPassword: "",
         }}
         onSubmit={(values) => {
-          console.log("values", values);
+          handleRegister(values);
         }}
       >
         {({ handleBlur, handleSubmit, handleChange, values, errors }) => {
@@ -67,7 +95,12 @@ function SignInPage() {
                 <Paragraph>{t("signUpPage.alreadyHaveAnAccount")}</Paragraph>
               </Button>
 
-              <Button type="secondary" handlePress={handleSubmit}>
+              <Button
+                type="secondary"
+                handlePress={handleSubmit}
+                disabled={loading}
+                loading={loading}
+              >
                 <H2 style={{ color: "black" }}>{t("signUpPage.submit")}</H2>
               </Button>
             </View>

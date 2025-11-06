@@ -3,7 +3,7 @@ import { H1, H2, Paragraph } from "@/components/typography/typography";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { Formik } from "formik";
 
@@ -12,12 +12,33 @@ import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { useSchemas } from "@/constants/schemas";
 import { LanguageDropdown } from "@/components/Language/LanguageDropdown";
+import { Toast } from "toastify-react-native";
 
 function SignInPage() {
   const { t } = useTranslation();
   const { loginSchema } = useSchemas();
   const router = useRouter();
-  const { handleSignIn, handleSignOut } = useAuth();
+  const { handleSignIn, handleSignOut, user, loading } = useAuth();
+  console.log("🚀 ~ SignInPage ~ user:", user);
+
+  // console.log("user", user);
+
+  useEffect(() => {
+    if (user && !loading) {
+      router.push("/dashboard");
+    }
+  }, []);
+
+  async function handleSubmit(values: { email: string; password: string }) {
+    const { message, success, error } = await handleSignIn(values);
+
+    if (success) {
+      router.push("/dashboard");
+    }
+    if (error) {
+      Toast.error(message);
+    }
+  }
 
   return (
     <ThemedView style={styles.container}>
@@ -25,21 +46,6 @@ function SignInPage() {
         <LanguageDropdown />
       </View>
       <H1>{t("signInPage.title")}</H1>
-
-      <Button
-        type="ghost"
-        handlePress={() => {
-          handleSignIn({
-            username: "username",
-            email: "email@gmail.com",
-            accessToken: "token",
-            avatar: "",
-            roles: { user: "user" },
-          });
-          router.push("/dashboard");
-        }}
-        title={"Dshboard"}
-      />
 
       <Button
         type="ghost"
@@ -55,17 +61,10 @@ function SignInPage() {
         onSubmit={
           (values) => {
             console.log("values", values);
+            handleSubmit(values);
+            // Send data from Backend to handleSignIn if values were typed and passed form schema validation
 
-            // TODO send data from Backend to handleSignIn
-            handleSignIn({
-              username: "username",
-              email: "email@gmail.com",
-              accessToken: "token",
-              avatar: "",
-              roles: { user: "user" },
-            });
-
-            router.push("/dashboard");
+            // router.push("/dashboard");
           }
           //TODO; request with credentials
         }
@@ -103,7 +102,12 @@ function SignInPage() {
                 </Button>
               </View>
 
-              <Button type="secondary" handlePress={handleSubmit}>
+              <Button
+                type="secondary"
+                handlePress={handleSubmit}
+                disabled={loading}
+                loading={loading}
+              >
                 <H2 style={{ color: "black" }}>{t("signInPage.submit")}</H2>
               </Button>
             </View>

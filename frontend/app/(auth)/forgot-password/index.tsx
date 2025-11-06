@@ -1,8 +1,10 @@
+import { apiFactory } from "@/api/apiFactory";
 import { ThemedView } from "@/components/themed-view";
 import { H1, H2, Paragraph } from "@/components/typography/typography";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSchemas } from "@/constants/schemas";
+import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "expo-router";
 import { Formik } from "formik";
 import React from "react";
@@ -11,18 +13,37 @@ import { StyleSheet, View } from "react-native";
 import { Toast } from "toastify-react-native";
 
 function ForgotPasswordPage() {
+  const [loading, setLoading] = React.useState(false);
   const router = useRouter();
   const { forgotPasswordSchema } = useSchemas();
   const { t } = useTranslation();
+
+  const { user } = useAuth();
+  if (user?.accessToken) {
+    router.push("/dashboard");
+  }
+
+  async function handleSendCode(values: { email: string }) {
+    setLoading(true);
+    try {
+      await apiFactory.forgotPassword(values);
+
+      Toast.success(t("forgotPasswordPage.anEmailWasSent"));
+      router.push("/forgot-password/verification-otp");
+    } catch (error: any) {
+      Toast.error(error?.response?.data?.message || error?.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <ThemedView style={styles.container}>
       <H1>{t("forgotPasswordPage.forgotPasswordTitle")}</H1>
 
       <Formik
         onSubmit={(values) => {
-          console.log("email", values);
-          Toast.success(t("forgotPasswordPage.anEmailWasSent"));
-          router.push("/forgot-password/verification-otp");
+          handleSendCode(values);
         }}
         validationSchema={forgotPasswordSchema}
         initialValues={{ email: "" }}
@@ -52,7 +73,12 @@ function ForgotPasswordPage() {
                   <Paragraph>{t("forgotPasswordPage.signIn")}</Paragraph>
                 </Button>
               </View>
-              <Button type="secondary" handlePress={handleSubmit}>
+              <Button
+                type="secondary"
+                handlePress={handleSubmit}
+                loading={loading}
+                disabled={loading}
+              >
                 <H2 style={{ color: "black" }}>
                   {t("forgotPasswordPage.submit")}
                 </H2>

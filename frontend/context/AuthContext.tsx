@@ -3,74 +3,153 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 import * as SecureStore from "expo-secure-store";
 import { Platform } from "react-native";
+import { axiosInstance } from "@/lib/axiosConfig";
+import { decodeJWT } from "@/lib/decodeJWT";
+import { apiFactory } from "@/api/apiFactory";
 
 type AuthContextType = {
+  loading: boolean;
   user: UserType | null;
-  handleSignIn: (user: UserType) => void;
-  handleSignOut: () => void;
+  handleSignIn: (userCredentials: {
+    password: string;
+    email: string;
+  }) => Promise<{
+    message: string;
+    success: boolean;
+    error: boolean;
+  }>;
+  handleSignOut: () => Promise<{
+    message: string;
+    success: boolean;
+    error: boolean;
+  }>;
+  checkUserSession(): void;
 };
 const AuthContext = createContext<AuthContextType>({
   user: null,
-  handleSignIn: () => {},
-  handleSignOut: () => {},
+  loading: false,
+  handleSignIn: () => {
+    return Promise.resolve({ message: "", success: false, error: false });
+  },
+  handleSignOut: () => {
+    return Promise.resolve({ message: "", success: false, error: false });
+  },
+  checkUserSession: () => {},
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserType | null>(null);
+  const [loading, setLoading] = useState(false);
 
   // Will check at reload page if user is authenticated
-  async function checkIfUserIsAuthenticated() {
-    const token =
+  async function checkUserSession() {
+    const accessToken =
       Platform.OS === "web"
-        ? localStorage.getItem("token")
-        : await SecureStore.getItemAsync("token");
+        ? localStorage.getItem("recipe-token")
+        : await SecureStore.getItemAsync("recipe-token");
 
-    //  If token exists, make a req and check if its not expired.
-    //if expired make a refreshToken req.
-    //if refreshtoken expired then delete token and logout
+    if (accessToken) {
+      const payload = decodeJWT(accessToken);
+      console.log("🚀 payload:", payload);
 
-    if (token) {
-      setUser({
-        username: "username",
-        email: "email@gmail.com",
-        accessToken: token,
-        avatar: "",
-        roles: { user: "user" },
-      });
+      if (Date.now() >= payload.exp * 1000) {
+        console.log("Expired token");
+        // TODO make refreshTokenRequest INTERSEPTORS
+
+        try {
+          const response = await apiFactory.refreshToken();
+
+          if (response?.accessToken) {
+            if (Platform.OS === "web") {
+              localStorage.setItem(
+                "recipe-token",
+                JSON.stringify(response.data.accessToken)
+              ); //only for tests on website
+            } else {
+              await SecureStore.setItemAsync(
+                "recipe-token",
+                JSON.stringify(response.data.accessToken)
+              ); //encrypts token on mobile platform
+            }
+          }
+        } catch (error: any) {
+          // In case the refresh token couldnt be generated then logout
+          handleSignOut();
+        }
+      }
+      setUser({ ...payload, accessToken });
+    } else {
+      handleSignOut();
     }
   }
+
   useEffect(() => {
-    console.log("Reload page");
-    checkIfUserIsAuthenticated();
+    checkUserSession();
   }, []);
 
-  async function handleSignIn(user: UserType) {
-    if (user.accessToken) {
-      if (Platform.OS === "web") {
-        localStorage.setItem("token", user.accessToken);
+  async function handleSignIn(userCredentials: {
+    password: string;
+    email: string;
+  }) {
+    setLoading(true);
+    try {
+      const response = await apiFactory.login(userCredentials);
+
+      // make request to backend to get token
+      if (response?.accessToken) {
+        if (Platform.OS === "web") {
+          localStorage.setItem(
+            "recipe-token",
+            JSON.stringify(response.accessToken)
+          ); //only for tests on website
+        } else {
+          await SecureStore.setItemAsync(
+            "recipe-token",
+            JSON.stringify(response.accessToken)
+          ); //encrypts token on mobile platform
+        }
       } else {
-        await SecureStore.setItemAsync("token", user.accessToken); //encrypts token
+        throw new Error("User not found");
       }
+
+      setUser(response);
+
+      return { message: "Success", success: true, error: false };
+    } catch (error: any) {
+      console.log("🚀 ~ handleSignIn ~ error:", error);
+      return {
+        message: error?.response?.data?.message || error.message,
+        success: false,
+        error: true,
+      };
+    } finally {
+      setLoading(false);
     }
-    const token =
-      Platform.OS === "web"
-        ? localStorage.getItem("token")
-        : await SecureStore.getItemAsync("token");
-
-    console.log("🚀 ~ Saved securely token:", token);
-    // TODO http client login req based on user credentials
-
-    setUser(user);
   }
 
   async function handleSignOut() {
-    // TODO http client req to logout
-    setUser(null);
+    setLoading(true);
+    try {
+      setUser(null);
+      // TODO http client req to logout
 
-    if (Platform.OS === "web") {
-      localStorage.removeItem("token");
-    } else {
-      await SecureStore.deleteItemAsync("token"); //encrypts token
+      await apiFactory.logout();
+
+      if (Platform.OS === "web") {
+        localStorage.removeItem("recipe-token");
+      } else {
+        await SecureStore.deleteItemAsync("recipe-token"); //encrypts token
+      }
+
+      return { message: "Success", success: true, error: false };
+    } catch (error: any) {
+      return {
+        message: error?.response?.data?.message || error.message,
+        success: false,
+        error: true,
+      };
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -79,13 +158,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   //If token expires then Dispatch Refreshtoken request
   // if refresh token is expired then logout
   return (
-    <AuthContext.Provider value={{ user, handleSignIn, handleSignOut }}>
+    <AuthContext.Provider
+      value={{
+        loading,
+        user,
+        handleSignIn,
+        handleSignOut,
+        checkUserSession,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 }
 
 export function useAuth() {
-  const { user, handleSignIn, handleSignOut } = useContext(AuthContext);
-  return { user, handleSignIn, handleSignOut };
+  const { user, loading, handleSignIn, handleSignOut, checkUserSession } =
+    useContext(AuthContext);
+
+  return { user, loading, handleSignIn, handleSignOut };
 }

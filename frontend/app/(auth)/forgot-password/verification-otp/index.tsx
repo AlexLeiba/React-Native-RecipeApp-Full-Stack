@@ -1,3 +1,4 @@
+import { apiFactory } from "@/api/apiFactory";
 import { ThemedView } from "@/components/themed-view";
 import { H1, H2, Paragraph } from "@/components/typography/typography";
 import { Button } from "@/components/ui/button";
@@ -8,22 +9,36 @@ import { Formik } from "formik";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
+import { Toast } from "toastify-react-native";
 
 function VerificationOtpPage() {
+  const [loading, setLoading] = React.useState(false);
   const router = useRouter();
   const { checkOtpSchema } = useSchemas();
   const { t } = useTranslation();
+
+  async function handleVerifyOtp(values: { otp: string }) {
+    setLoading(true);
+    try {
+      await apiFactory.checkOtpCode(values);
+
+      router.push("/forgot-password/verification-otp/reset-password");
+    } catch (error: any) {
+      Toast.error(error?.response?.data?.message || error?.message);
+    } finally {
+      setLoading(false);
+    }
+  }
   return (
     <ThemedView style={styles.container}>
       <H1>{t("forgotPasswordPage.codeVerificationTitle")}</H1>
 
       <Formik
         onSubmit={(values) => {
-          console.log("code", values);
-          router.push("/forgot-password/verification-otp/reset-password");
+          handleVerifyOtp(values);
         }}
         validationSchema={checkOtpSchema}
-        initialValues={{ code: "" }}
+        initialValues={{ otp: "" }}
       >
         {({ handleChange, handleSubmit, values, errors }) => {
           return (
@@ -33,9 +48,9 @@ function VerificationOtpPage() {
                   "forgotPasswordPage.verificationCodePlaceholder"
                 )}
                 label={t("forgotPasswordPage.verificationLabel")}
-                handleChange={handleChange("code")}
-                value={values.code}
-                errorMessage={errors.code}
+                handleChange={handleChange("otp")}
+                value={values.otp}
+                errorMessage={errors.otp}
               />
 
               <View style={styles.linkContainer}>
@@ -52,7 +67,12 @@ function VerificationOtpPage() {
                   <Paragraph>{t("forgotPasswordPage.signIn")}</Paragraph>
                 </Button>
               </View>
-              <Button type="secondary" handlePress={handleSubmit}>
+              <Button
+                type="secondary"
+                handlePress={handleSubmit}
+                loading={loading}
+                disabled={loading}
+              >
                 <H2 style={{ color: "black" }}>
                   {t("forgotPasswordPage.submit")}
                 </H2>

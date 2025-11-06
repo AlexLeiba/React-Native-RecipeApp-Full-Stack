@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 async function loginController(req, res) {
+  console.log("🚀 ~ loginController ~ req:", req.body);
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -60,7 +61,7 @@ async function loginController(req, res) {
       process.env.JWT_SECRET_ACCESS_TOKEN,
       {
         // TODO, change expires to 15 min
-        expiresIn: "1d",
+        expiresIn: "1min",
       }
     );
 
@@ -205,11 +206,11 @@ async function checkOTPController(req, res) {
   const { otp, email } = req.body;
 
   if (!otp || !email) {
-    res.status(400).json({ message: "Some required fields are missing." });
+    res.status(400).json({ message: "Invalid credentials" });
   }
 
   try {
-    const foundUserWithOtp = await UserModel.findOne({ otp, email });
+    const foundUserWithOtp = await UserModel.findOne({ otp });
     if (!foundUserWithOtp) {
       res.status(400).json({ message: "The code is invalid." });
     }
@@ -275,6 +276,7 @@ async function newPasswordController(req, res) {
 }
 async function refreshTokenController(req, res) {
   const cookies = req.cookies;
+  console.log("🚀 ~ refreshTokenController ~ cookies:", cookies);
 
   if (!cookies?.jwt) {
     res.status(401).json({ message: "Unauthorized" });
@@ -308,7 +310,7 @@ async function refreshTokenController(req, res) {
           },
           process.env.JWT_SECRET_ACCESS_TOKEN,
           // TODO change to 15 min
-          { expiresIn: "1d" }
+          { expiresIn: "1min" }
         );
 
         if (!jwtNewAccessToken) {

@@ -10,6 +10,7 @@ type ButtonProps = {
   handlePress: () => void;
   title?: string;
   type?: "primary" | "secondary" | "tertiary" | "link" | "ghost";
+  loading?: boolean;
   children?: React.ReactNode;
 } & TouchableHighlightProps;
 export const Button = ({
@@ -17,6 +18,7 @@ export const Button = ({
   title,
   type = "primary",
   children,
+  loading,
   ...rest
 }: ButtonProps) => {
   return (
@@ -32,10 +34,10 @@ export const Button = ({
               },
             ]}
           >
-            {title}
+            {loading ? "Loading..." : title}
           </H3>
         )}
-        {children}
+        {loading ? "Loading..." : children}
       </>
     </TouchableOpacity>
   );

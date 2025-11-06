@@ -6,6 +6,7 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
+import { Toast } from "toastify-react-native";
 
 function ProfilePage() {
   const { t } = useTranslation();
@@ -35,9 +36,15 @@ function ProfilePage() {
     router.push("/dashboard");
   }
 
-  function handleLogout() {
-    handleSignOut();
-    router.push("/");
+  async function handleLogout() {
+    const result = await handleSignOut();
+
+    if (result.success) {
+      router.push("/");
+    }
+    if (result.error) {
+      Toast.error(result.message);
+    }
   }
   return (
     <>

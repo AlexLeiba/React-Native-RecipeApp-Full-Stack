@@ -4,8 +4,13 @@ import axios from "axios";
 
 const baseURL =
   Platform.OS === "web"
-    ? process.env.BACKEND_BASE_URL
-    : "http://localhost:3000";
+    ? process.env.BACKEND_BASE_URL || "http://localhost:4000"
+    : "http://localhost:4000";
+
 export const axiosInstance = axios.create({
   baseURL: baseURL,
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });

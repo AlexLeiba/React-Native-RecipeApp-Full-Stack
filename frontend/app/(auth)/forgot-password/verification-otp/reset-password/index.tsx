@@ -1,3 +1,4 @@
+import { apiFactory } from "@/api/apiFactory";
 import { ThemedView } from "@/components/themed-view";
 import { H1, H2, Paragraph } from "@/components/typography/typography";
 import { Button } from "@/components/ui/button";
@@ -8,19 +9,42 @@ import { Formik } from "formik";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
+import { Toast } from "toastify-react-native";
 
 function ResetPasswordPage() {
+  const [loading, setLoading] = React.useState(false);
   const router = useRouter();
   const { changePasswordSchema } = useSchemas();
   const { t } = useTranslation();
+
+  async function handleChangePassword(values: {
+    newPassword: string;
+    confirmPassword: string;
+  }) {
+    setLoading(true);
+    try {
+      // TODO., trackl user email ion localStoragez
+      // After registered or any error clear email user.
+      await apiFactory.createNewPassword({
+        newPassword: values.newPassword,
+        email: "alexleiba13+4@gmail.com",
+      });
+
+      Toast.success("New password was changed successfully");
+      router.push("/");
+    } catch (error: any) {
+      Toast.error(error?.response?.data?.message || error?.message);
+    } finally {
+      setLoading(false);
+    }
+  }
   return (
     <ThemedView style={styles.container}>
       <H1>{t("forgotPasswordPage.resetPasswordTitle")}</H1>
 
       <Formik
         onSubmit={(values) => {
-          console.log("email", values);
-          router.push("/");
+          handleChangePassword(values);
         }}
         validationSchema={changePasswordSchema}
         initialValues={{ newPassword: "", confirmPassword: "" }}
@@ -56,7 +80,12 @@ function ResetPasswordPage() {
                   <Paragraph>{t("forgotPasswordPage.signIn")}</Paragraph>
                 </Button>
               </View>
-              <Button type="secondary" handlePress={handleSubmit}>
+              <Button
+                type="secondary"
+                handlePress={handleSubmit}
+                loading={loading}
+                disabled={loading}
+              >
                 <H2 style={{ color: "black" }}>
                   {t("forgotPasswordPage.submit")}
                 </H2>

@@ -21,12 +21,9 @@ const initialState: CategoriesState = {
   },
 };
 
-type FetchCategoriesParamsType = {
-  type: RequestPrefixType;
-};
 export const fetchCategories = createAsyncThunk(
   "categories/fetchCategories",
-  async ({ type }: FetchCategoriesParamsType, thunkAPI) => {
+  async ({ type }: RequestPrefixType, thunkAPI) => {
     try {
       const response = await axiosInstance.get(`${type}/categories`);
       console.log("🚀 ~ cat response:", response);

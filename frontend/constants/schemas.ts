@@ -85,7 +85,7 @@ function useCheckOtpSchema() {
   const { t } = useTranslation();
 
   return Yup.object().shape({
-    code: Yup.string()
+    otp: Yup.string()
       .required(t("forgotPasswordPage.required"))
       .min(6, t("forgotPasswordPage.codeMustBeSixDigits"))
       .max(6, t("forgotPasswordPage.codeMustBeSixDigits")),

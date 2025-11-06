@@ -7,7 +7,7 @@ import { ThemedView } from "@/components/themed-view";
 import { H1, H3 } from "@/components/typography/typography";
 import { Button } from "@/components/ui/button";
 import { globalStyles } from "@/constants/stylesheets";
-import { CategoryType } from "@/constants/types";
+import { RequestPrefixType } from "@/constants/types";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/config";
 import { fetchCategories } from "@/store/slices/categories";
@@ -46,7 +46,7 @@ function HomePage() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(fetchCategories());
+    // dispatch(fetchCategories({ type: "api" }));
     //fetch data
   }, []);
 

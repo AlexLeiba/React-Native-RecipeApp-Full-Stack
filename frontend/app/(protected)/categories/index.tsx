@@ -26,7 +26,9 @@ function CategoriesPage() {
   const router = useRouter();
 
   const theme = useColorScheme() ?? "light";
-  const categoriesData = useSelector((state: RootState) => state.categories);
+  const categoriesData = useSelector(
+    (state: RootState) => state.categories.data
+  );
   console.log("🚀 ~ CategoriesPage ~ categoriesData:", categoriesData);
   const dispatch = useDispatch();
 

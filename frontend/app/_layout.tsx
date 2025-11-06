@@ -13,12 +13,13 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistor, store } from "../store/config";
 import { initI18n } from "./i18n";
-import { AuthProvider } from "@/context/AuthContext";
+import { AuthProvider, useAuth } from "@/context/AuthContext";
 import "react-native-reanimated";
 import ToastManager from "toastify-react-native";
 
 export default function RootLayout() {
   const [ready, setReady] = useState(false);
+  useAuth();
   useEffect(() => {
     (async () => {
       await initI18n(); // initialize i18n safely

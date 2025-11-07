@@ -34,10 +34,6 @@ export const FavoriteAndEditButton = ({ recipeData }: FavoriteButtonProps) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const favoriteElement = useSelector((state: RootState) =>
-    state.favorites.favorites.find((recipe) => recipe._id === recipeData._id)
-  );
-
   function handleAddToFavorites() {
     // dispatch(
     //         setToFavorite({
@@ -59,7 +55,7 @@ export const FavoriteAndEditButton = ({ recipeData }: FavoriteButtonProps) => {
         handlePress={handleAddToFavorites}
         style={styles.favoriteButton}
       >
-        <Heart color={favoriteElement ? "red" : "white"} />
+        <Heart color={recipeData.isFavorite ? "red" : "white"} />
       </Button>
 
       <Button

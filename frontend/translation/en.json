@@ -25,7 +25,8 @@
     "passwordTooLong": "Password is too long",
     "invalidEmail": "Invalid email",
     "alreadyHaveAnAccount": "Already have an account? Sign in",
-    "submit": "Submit"
+    "submit": "Submit",
+    "successMessage": "Account created successfully"
   },
   "forgotPasswordPage": {
     "forgotPasswordTitle": "Forgot Password",
@@ -33,7 +34,6 @@
     "emailPlaceholder": "Type your email here",
     "invalidEmail": "Invalid email",
     "sendEmail": "Send email",
-    "anEmailWasSent": "A verification code was sent to your email",
 
     "codeVerificationTitle": "Code Verification",
     "verificationLabel": "Verification code",
@@ -53,7 +53,9 @@
     "required": "Required",
 
     "signIn": "Sign in",
-    "signUp": "Sign up"
+    "signUp": "Sign up",
+    "anEmailWasSent": "A verification code was sent to your email",
+    "newPasswordChanged": "Your password was changed successfully"
   },
   "homePage": {
     "title": "All Recipes",

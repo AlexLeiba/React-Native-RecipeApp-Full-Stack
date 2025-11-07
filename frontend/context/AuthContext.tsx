@@ -3,7 +3,6 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 import * as SecureStore from "expo-secure-store";
 import { Platform } from "react-native";
-import { axiosInstance } from "@/lib/axiosConfig";
 import { decodeJWT } from "@/lib/decodeJWT";
 import { apiFactory } from "@/api/apiFactory";
 
@@ -52,6 +51,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const payload = decodeJWT(accessToken);
       console.log("🚀 payload:", payload);
 
+      // if expired
       if (Date.now() >= payload.exp * 1000) {
         console.log("Expired token");
         // TODO make refreshTokenRequest INTERSEPTORS
@@ -63,28 +63,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             if (Platform.OS === "web") {
               localStorage.setItem(
                 "recipe-token",
-                JSON.stringify(response.data.accessToken)
+                JSON.stringify(response.accessToken)
               ); //only for tests on website
             } else {
               await SecureStore.setItemAsync(
                 "recipe-token",
-                JSON.stringify(response.data.accessToken)
+                JSON.stringify(response.accessToken)
               ); //encrypts token on mobile platform
             }
+            setUser({ ...payload, accessToken: response?.accessToken });
           }
         } catch (error: any) {
+          console.log("error", error.message, error.response);
           // In case the refresh token couldnt be generated then logout
           handleSignOut();
         }
       }
-      setUser({ ...payload, accessToken });
+      // If not expired
+      setUser({ ...payload, accessToken: accessToken });
     } else {
+      console.log("no token");
       handleSignOut();
     }
   }
 
   useEffect(() => {
-    checkUserSession();
+    // checkUserSession();
   }, []);
 
   async function handleSignIn(userCredentials: {
@@ -173,7 +177,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useAuth() {
-  const { user, loading, handleSignIn, handleSignOut, checkUserSession } =
+  const { user, loading, handleSignIn, handleSignOut } =
     useContext(AuthContext);
 
   return { user, loading, handleSignIn, handleSignOut };

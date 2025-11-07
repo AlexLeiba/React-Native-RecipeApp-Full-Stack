@@ -10,8 +10,10 @@ import { H1, H2, Paragraph } from "@/components/typography/typography";
 import { Button } from "@/components/ui/button";
 import { globalStyles } from "@/constants/stylesheets";
 import { Colors } from "@/constants/theme";
-import { RecipesType } from "@/constants/types";
+
+import { useAppDispatch } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/config";
+import { getRecipe } from "@/store/slices/recipes";
 import { useLocalSearchParams } from "expo-router";
 import { Clock, Flame, FlameKindling, User2 } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
@@ -30,13 +32,18 @@ function RecipeDetailsPage() {
   const { t } = useTranslation();
   const theme = useColorScheme() ?? "light";
   const { recipeId } = useLocalSearchParams();
-  const recipes = useSelector((state: RootState) => state.recipes);
+  const selectedRecipeData = useSelector(
+    (state: RootState) => state.recipes.selectedRecipe
+  );
+  console.log("🚀 ~ RecipeDetailsPage ~ recipes:", selectedRecipeData);
+  const dispatch = useAppDispatch();
 
-  const [selectedRecipeData, setSelectedRecipeData] = useState<RecipesType>();
+  // const [selectedRecipeData, setSelectedRecipeData] = useState<RecipesType>();
 
   useEffect(() => {
-    const selectedRecipe = recipes.items.find((rec) => rec._id === recipeId);
-    setSelectedRecipeData(selectedRecipe);
+    if (typeof recipeId === "string") {
+      dispatch(getRecipe({ type: "api", recipeId: recipeId }));
+    }
   }, [recipeId]);
 
   const [loading, setLoading] = useState(false);
@@ -125,7 +132,7 @@ function RecipeDetailsPage() {
       <View style={[globalStyles.alignCenter, { gap: 10, marginBottom: 20 }]}>
         <H1>{selectedRecipeData?.name}</H1>
 
-        {selectedRecipeData.description && (
+        {selectedRecipeData?.description && (
           <View style={[{}, { gap: 10, marginBottom: 20 }]}>
             <Paragraph style={{ color: Colors[theme].text }}>
               {selectedRecipeData.description}
@@ -177,7 +184,7 @@ function RecipeDetailsPage() {
         ListHeaderComponent={() => (
           <H2>{t("detailsRecipePage.ingredients")}</H2>
         )}
-        data={selectedRecipeData?.details.ingredients}
+        data={selectedRecipeData?.details?.ingredients}
         renderItem={({ item }) => <IngredientsCard title={item} />}
       />
     </ScrollView>

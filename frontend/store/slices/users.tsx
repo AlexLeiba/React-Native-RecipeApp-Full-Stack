@@ -1,10 +1,11 @@
+import { axiosProtectedInstance } from "@/api/axiosClient";
 import { USERS } from "@/constants/MockData";
 import {
   NetworkActivitiesType,
   RequestPrefixType,
   UserType,
 } from "@/constants/types";
-import { axiosInstance } from "@/lib/axiosConfig";
+
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const initialState: {
@@ -24,10 +25,9 @@ export const fetchUsers = createAsyncThunk(
   "users/fetchUsers",
   async ({ type }: RequestPrefixType, thunkAPI) => {
     try {
-      const response = await axiosInstance.get(`${type}/users`);
-      console.log("🚀 ~ Fetch users:", response);
+      const { data } = await axiosProtectedInstance.get(`${type}/users`);
 
-      return response.data; // This becomes `action.payload` in fulfilled reducer
+      return data; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -42,12 +42,12 @@ type GetUserParamsType = {
 export const getUser = createAsyncThunk(
   "users/getUser",
   async ({ userId, type }: GetUserParamsType, thunkAPI) => {
-    console.log("🚀 ~UserId:", userId);
     try {
-      const response = await axiosInstance.get(`${type}/users/${userId}`);
-      console.log("🚀 ~ response:", response);
+      const { data } = await axiosProtectedInstance.get(
+        `${type}/users/${userId}`
+      );
 
-      return response.data; // This becomes `action.payload` in fulfilled reducer
+      return data; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -64,15 +64,11 @@ export const editUser = createAsyncThunk(
   "users/editUser",
   async ({ userData, type, userId }: EditUserParamsType, thunkAPI) => {
     try {
-      const response = await axiosInstance.put(
-        `${type}/users/${userId}`,
-        userData
-      );
-      console.log("🚀 ~ data:", response);
-      const usersData = await axiosInstance.get(`${type}/users`);
-      console.log("🚀 ~ data:", usersData);
+      await axiosProtectedInstance.put(`${type}/users/${userId}`, userData);
 
-      return usersData.data;
+      const { data } = await axiosProtectedInstance.get(`${type}/users`);
+
+      return data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -87,15 +83,12 @@ type DeleteUserParamsType = {
 export const deleteUser = createAsyncThunk(
   "users/deleteUser",
   async ({ userId, type }: DeleteUserParamsType, thunkAPI) => {
-    console.log("🚀 ~UserId:", userId);
     try {
-      const response = await axiosInstance.delete(`${type}/users/${userId}`);
-      console.log("🚀 ~ response:", response);
+      await axiosProtectedInstance.delete(`${type}/users/${userId}`);
 
-      const usersData = await axiosInstance.get(`${type}/users`);
-      console.log("🚀 ~ data:", usersData);
+      const { data } = await axiosProtectedInstance.get(`${type}/users`);
 
-      return usersData.data; // This becomes `action.payload` in fulfilled reducer
+      return data; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }

@@ -29,7 +29,7 @@ function ForgotPasswordPage() {
       await apiFactory.forgotPassword(values);
 
       Toast.success(t("forgotPasswordPage.anEmailWasSent"));
-      router.push("/forgot-password/verification-otp");
+      router.push(`/forgot-password/verification-otp?email=${values.email}`);
     } catch (error: any) {
       Toast.error(error?.response?.data?.message || error?.message);
     } finally {

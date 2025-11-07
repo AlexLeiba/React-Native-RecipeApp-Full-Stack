@@ -1,3 +1,4 @@
+import { axiosProtectedInstance } from "@/api/axiosClient";
 import {
   CategoryType,
   NetworkActivitiesType,
@@ -5,7 +6,7 @@ import {
   RequestPrefixType,
   UserType,
 } from "@/constants/types";
-import { axiosInstance } from "@/lib/axiosConfig";
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState: {
@@ -33,12 +34,11 @@ export const searchUsers = createAsyncThunk(
   "search/searchUsers",
   async ({ type, search }: SearchType, thunkAPI) => {
     try {
-      const response = await axiosInstance.get(
+      const { data } = await axiosProtectedInstance.get(
         `${type}/users/search/${search}`
       );
-      console.log("🚀 ~ Fetch users:", response);
 
-      return response.data; // This becomes `action.payload` in fulfilled reducer
+      return data; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -50,12 +50,11 @@ export const searchCategories = createAsyncThunk(
   async ({ search, type }: SearchType, thunkAPI) => {
     console.log("🚀 ~ search:", search);
     try {
-      const response = await axiosInstance.get(
+      const { data } = await axiosProtectedInstance.get(
         `${type}/categories/search/${search}`
       );
-      console.log("🚀 ~ cat response:", response);
 
-      return response.data; // This becomes `action.payload` in fulfilled reducer
+      return data; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -66,12 +65,11 @@ export const searchRecipes = createAsyncThunk(
   async ({ search, type }: SearchType, thunkAPI) => {
     console.log("🚀 ~ search:", search);
     try {
-      const response = await axiosInstance.get(
+      const { data } = await axiosProtectedInstance.get(
         `${type}/recipes/search/${search}`
       );
-      console.log("🚀 ~ cat response:", response);
 
-      return response.data; // This becomes `action.payload` in fulfilled reducer
+      return data; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }

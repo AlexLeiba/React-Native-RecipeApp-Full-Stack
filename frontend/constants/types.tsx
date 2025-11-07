@@ -1,6 +1,4 @@
-export type RequestPrefixType = {
-  type: "api" | "admin";
-};
+export type RequestPrefixType = "api" | "admin";
 
 export type NetworkActivitiesType = {
   status: "pending" | "fulfilled" | "rejected" | "idle";
@@ -40,6 +38,7 @@ export type RecipesType = {
   categoryId: string;
   categoryName: string;
   description?: string;
+  isFavorite: boolean;
   link?: {
     linkUrl?: string;
     linkName?: string;

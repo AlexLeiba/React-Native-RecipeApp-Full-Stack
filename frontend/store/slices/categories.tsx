@@ -1,10 +1,10 @@
+import { axiosProtectedInstance } from "@/api/axiosClient";
 import { CATEGORIES_DATA } from "@/constants/MockData";
 import {
   CategoryType,
   NetworkActivitiesType,
   RequestPrefixType,
 } from "@/constants/types";
-import { axiosInstance } from "@/lib/axiosConfig";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 type CategoriesState = {
@@ -23,12 +23,13 @@ const initialState: CategoriesState = {
 
 export const fetchCategories = createAsyncThunk(
   "categories/fetchCategories",
-  async ({ type }: RequestPrefixType, thunkAPI) => {
+  async (type: RequestPrefixType, thunkAPI) => {
     try {
-      const response = await axiosInstance.get(`${type}/categories`);
-      console.log("🚀 ~ cat response:", response);
+      const {
+        data: { data },
+      } = await axiosProtectedInstance.get(`${type}/categories`);
 
-      return response.data; // This becomes `action.payload` in fulfilled reducer
+      return data; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -43,12 +44,11 @@ export const getCategory = createAsyncThunk(
   "categories/getCategory",
   async ({ categoryId, type }: FetchCategoryParamsType, thunkAPI) => {
     try {
-      const response = await axiosInstance.get(
+      const { data } = await axiosProtectedInstance.get(
         `${type}/categories/${categoryId}`
       );
-      console.log("🚀 ~ categoryId", response);
 
-      return response.data; // This becomes `action.payload` in fulfilled reducer
+      return data; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -63,14 +63,10 @@ export const createNewCategory = createAsyncThunk(
   "categories/createNewCategory",
   async ({ categoryData, type }: CreateCategoryParamsType, thunkAPI) => {
     try {
-      const response = await axiosInstance.post(
-        `${type}/categories`,
-        categoryData
-      );
-      const categoriesData = await axiosInstance.get(`${type}/categories`);
-      console.log("🚀 ~ data:", response, categoriesData);
+      await axiosProtectedInstance.post(`${type}/categories`, categoryData);
+      const { data } = await axiosProtectedInstance.get(`${type}/categories`);
 
-      return categoriesData.data;
+      return data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -89,16 +85,14 @@ export const editCategory = createAsyncThunk(
     thunkAPI
   ) => {
     try {
-      const response = await axiosInstance.put(
+      await axiosProtectedInstance.put(
         `${type}/categories/${categoryId}`,
         categoryData
       );
-      console.log("🚀 ~ response:", response);
 
-      const categoriesData = await axiosInstance.get(`${type}/categories`);
-      console.log("🚀 ~ categoriesData:", categoriesData);
+      const { data } = await axiosProtectedInstance.get(`${type}/categories`);
 
-      return categoriesData.data;
+      return data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -113,14 +107,11 @@ export const deleteCategory = createAsyncThunk(
   "categories/deleteCategory",
   async ({ categoryId, type }: DeleteCategoryParamsType, thunkAPI) => {
     try {
-      const response = await axiosInstance.delete(
-        `${type}/categories/${categoryId}`
-      );
+      await axiosProtectedInstance.delete(`${type}/categories/${categoryId}`);
 
-      const categoriesData = await axiosInstance.get(`${type}/categories`);
-      console.log("🚀 ~ categoriesData:", categoriesData, response);
+      const { data } = await axiosProtectedInstance.get(`${type}/categories`);
 
-      return categoriesData.data;
+      return data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }

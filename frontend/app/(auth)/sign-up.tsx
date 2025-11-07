@@ -17,9 +17,9 @@ function SignInPage() {
   const router = useRouter();
   const { registerSchema } = useSchemas();
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, loading: userLoading } = useAuth();
 
-  if (user?.accessToken) {
+  if (user?.accessToken && !userLoading) {
     router.push("/dashboard");
   }
 
@@ -31,9 +31,9 @@ function SignInPage() {
   }) {
     setLoading(true);
     try {
-      const response = await apiFactory.register(values);
+      await apiFactory.register(values);
 
-      Toast.success(response.message);
+      Toast.success(t("signUpPage.successMessage"));
       router.push("/");
     } catch (error: any) {
       Toast.error(error?.response?.data?.message || error?.message);

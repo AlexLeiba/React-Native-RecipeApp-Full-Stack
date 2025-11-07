@@ -4,7 +4,7 @@ import { H1, H2, Paragraph } from "@/components/typography/typography";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSchemas } from "@/constants/schemas";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { Formik } from "formik";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -16,6 +16,7 @@ function ResetPasswordPage() {
   const router = useRouter();
   const { changePasswordSchema } = useSchemas();
   const { t } = useTranslation();
+  const { email } = useLocalSearchParams();
 
   async function handleChangePassword(values: {
     newPassword: string;
@@ -23,14 +24,17 @@ function ResetPasswordPage() {
   }) {
     setLoading(true);
     try {
+      if (typeof email !== "string") {
+        throw new Error("Invalid user credentials");
+      }
       // TODO., trackl user email ion localStoragez
       // After registered or any error clear email user.
       await apiFactory.createNewPassword({
         newPassword: values.newPassword,
-        email: "alexleiba13+4@gmail.com",
+        email,
       });
 
-      Toast.success("New password was changed successfully");
+      Toast.success(t("forgotPasswordPage.newPasswordChanged"));
       router.push("/");
     } catch (error: any) {
       Toast.error(error?.response?.data?.message || error?.message);

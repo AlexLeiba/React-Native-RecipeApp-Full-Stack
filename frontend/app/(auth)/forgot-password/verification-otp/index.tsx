@@ -4,7 +4,7 @@ import { H1, H2, Paragraph } from "@/components/typography/typography";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSchemas } from "@/constants/schemas";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { Formik } from "formik";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -16,13 +16,20 @@ function VerificationOtpPage() {
   const router = useRouter();
   const { checkOtpSchema } = useSchemas();
   const { t } = useTranslation();
+  const { email } = useLocalSearchParams();
 
   async function handleVerifyOtp(values: { otp: string }) {
     setLoading(true);
     try {
-      await apiFactory.checkOtpCode(values);
+      if (typeof email !== "string") {
+        throw new Error("Invalid user credentials");
+      }
 
-      router.push("/forgot-password/verification-otp/reset-password");
+      await apiFactory.checkOtpCode({ otp: values.otp, email });
+
+      router.push(
+        `/forgot-password/verification-otp/reset-password?email=${email}`
+      );
     } catch (error: any) {
       Toast.error(error?.response?.data?.message || error?.message);
     } finally {

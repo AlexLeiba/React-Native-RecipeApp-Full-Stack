@@ -152,7 +152,7 @@ const mailTransporter = nodemailer.createTransport({
     pass: process.env.NODEMAILER_GMAIL_PASSWORD,
   },
 });
-const generatedOtpCode = Math.floor(Math.random() * 99000 + 10000);
+const generatedOtpCode = Math.floor(Math.random() * 990000 + 100000);
 async function forgotPasswordController(req, res) {
   const { email } = req.body;
 

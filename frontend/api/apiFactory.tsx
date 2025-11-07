@@ -1,4 +1,6 @@
 import { axiosInstance } from "@/lib/axiosConfig";
+import { axiosProtectedInstance } from "./axiosClient";
+import { RequestPrefixType } from "@/constants/types";
 
 export const apiFactory = {
   login: async (userCredentials: { email: string; password: string }) => {
@@ -23,7 +25,7 @@ export const apiFactory = {
 
     return response.data;
   },
-  checkOtpCode: async (userCredentials: { otp: string }) => {
+  checkOtpCode: async (userCredentials: { otp: string; email: string }) => {
     const response = await axiosInstance.post(
       "/api/check-otp",
       userCredentials

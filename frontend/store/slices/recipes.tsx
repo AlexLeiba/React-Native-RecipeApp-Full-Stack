@@ -1,10 +1,11 @@
+import { axiosProtectedInstance } from "@/api/axiosClient";
 import { RECIPES } from "@/constants/MockData";
 import {
   NetworkActivitiesType,
   RecipesType,
   RequestPrefixType,
 } from "@/constants/types";
-import { axiosInstance } from "@/lib/axiosConfig";
+
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const recipeInitialState: {
@@ -23,14 +24,15 @@ export const recipeInitialState: {
 // 1️⃣ Define async thunk
 export const fetchRecipes = createAsyncThunk(
   "recipes/fetchRecipes",
-  async ({ type }: RequestPrefixType, thunkAPI) => {
+  async (type: RequestPrefixType, thunkAPI) => {
     // Fetches all recipes and adds into the store
 
     try {
-      const response = await axiosInstance.get(`${type}/recipes`);
-      console.log("🚀 ~ response:", response);
+      const {
+        data: { data },
+      } = await axiosProtectedInstance.get(`${type}/recipes`);
 
-      return RECIPES; // This becomes `action.payload` in fulfilled reducer
+      return data; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -38,7 +40,7 @@ export const fetchRecipes = createAsyncThunk(
 );
 
 type GetRecipeParamsType = {
-  recipeId: number;
+  recipeId: string;
   type: RequestPrefixType;
 };
 export const getRecipe = createAsyncThunk(
@@ -47,10 +49,11 @@ export const getRecipe = createAsyncThunk(
     // Fetches all recipes and adds into the store
     console.log("recipeId", recipeId);
     try {
-      const response = await axiosInstance.get(`${type}/recipes/${recipeId}`);
-      console.log("🚀 ~ response:", response);
+      const {
+        data: { data },
+      } = await axiosProtectedInstance.get(`${type}/recipes/${recipeId}`);
 
-      return RECIPES[0]; // This becomes `action.payload` in fulfilled reducer
+      return data[0]; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -64,17 +67,15 @@ type FilterRecipesParamsType = {
 };
 export const filterRecipes = createAsyncThunk(
   "recipes/filterRecipes",
-  async ({ query, id, type }: FilterRecipesParamsType, thunkAPI) => {
-    console.log("params id", id, type);
+  async ({ query, type }: FilterRecipesParamsType, thunkAPI) => {
     // TODO filter based on category ID or own categories
     //Return filtered recipes
     try {
-      const response = await axiosInstance.get(
+      const { data } = await axiosProtectedInstance.get(
         `${type}/recipes?${query}=${query}`
       );
-      console.log("🚀 ~ data:", response);
 
-      return RECIPES; // This becomes `action.payload` in fulfilled reducer
+      return data; // This becomes `action.payload` in fulfilled reducer
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -90,12 +91,10 @@ export const createNewRecipe = createAsyncThunk(
   async ({ recipeData, type }: CreateRecipesParamsType, thunkAPI) => {
     // Pass new recipe data to backend
     try {
-      const data = await axiosInstance.post(`${type}/recipes`, recipeData);
-      const recipesData = await axiosInstance.get(`${type}/recipes`); //return new data
-      console.log("🚀 ~ recipesData:", recipesData);
-      console.log("🚀 ~ data:", data);
+      axiosProtectedInstance.post(`${type}/recipes`, recipeData);
+      const { data } = await axiosProtectedInstance.get(`${type}/recipes`); //return new data
 
-      return recipesData.data;
+      return data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -112,14 +111,13 @@ export const editRecipe = createAsyncThunk(
   async ({ recipeData, type, recipeId }: EditRecipesParamsType, thunkAPI) => {
     // TODO pass to backend Recipe edit data
     try {
-      const data = await axiosInstance.put(
+      await axiosProtectedInstance.put(
         `${type}/recipes/${recipeId}`,
         recipeData
       );
-      const recipesData = await axiosInstance.get(`${type}/recipes`);
-      console.log("🚀 ~ data:", data, recipesData);
+      const { data } = await axiosProtectedInstance.get(`${type}/recipes`);
 
-      return recipesData.data;
+      return data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -134,13 +132,11 @@ export const deleteRecipe = createAsyncThunk(
   "recipes/deleteRecipe",
   async ({ recipeId, type }: DeteleRecipesParamsType, thunkAPI) => {
     try {
-      const data = await axiosInstance.delete(`${type}/recipes/${recipeId}`);
-      console.log("🚀 ~ data:", data);
+      await axiosProtectedInstance.delete(`${type}/recipes/${recipeId}`);
 
-      const recipesData = await axiosInstance.get(`${type}/recipes`);
-      console.log("🚀 ~ recipesData:", recipesData);
+      const { data } = await axiosProtectedInstance.get(`${type}/recipes`);
 
-      return recipesData.data; //return new data and update store
+      return data; //return new data and update store
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
     }

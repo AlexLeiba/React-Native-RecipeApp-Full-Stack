@@ -7,8 +7,6 @@ import { ThemedView } from "@/components/themed-view";
 import { H1, H3 } from "@/components/typography/typography";
 import { Button } from "@/components/ui/button";
 import { globalStyles } from "@/constants/stylesheets";
-import { RequestPrefixType } from "@/constants/types";
-import { useAuth } from "@/context/AuthContext";
 import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { RootState } from "@/store/config";
 import { fetchCategories } from "@/store/slices/categories";

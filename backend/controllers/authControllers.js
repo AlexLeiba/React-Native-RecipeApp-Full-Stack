@@ -49,7 +49,7 @@ async function loginController(req, res) {
       maxAge: 1000 * 60 * 60 * 48, //2 days,
       secure: true, //https only
       sameSite: "None", // because frontend and backend are on different Domains
-      //Will secure CSRF attacks with CORS
+      //Will secure CSRF attacks with CORS which has the allowedOrigins set
     });
 
     const accessToken = jwt.sign(
@@ -61,7 +61,7 @@ async function loginController(req, res) {
       process.env.JWT_SECRET_ACCESS_TOKEN,
       {
         // TODO, change expires to 15 min
-        expiresIn: "1min",
+        expiresIn: "15min",
       }
     );
 
@@ -310,7 +310,7 @@ async function refreshTokenController(req, res) {
           },
           process.env.JWT_SECRET_ACCESS_TOKEN,
           // TODO change to 15 min
-          { expiresIn: "1min" }
+          { expiresIn: "15min" }
         );
 
         if (!jwtNewAccessToken) {
